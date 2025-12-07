@@ -4,18 +4,19 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "../contexts/authContext";
 import Layout from "../components/Layout";
 
+const Welcome = lazy(() => import("../pages/Welcome"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 
-const StudentDashboard = lazy(() => import("../pages/student/StudentDashboard"));
-const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
+const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
+// const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
 
-const Notes = lazy(() => import("../pages/student/Notes"));
-const Flashcards = lazy(() => import("../pages/student/Flashcards"));
-const QuizGenerator = lazy(() => import("../pages/student/QuizGenerator"));  
+// const Notes = lazy(() => import("../pages/student/Notes"));
+// const Flashcards = lazy(() => import("../pages/student/Flashcards"));
+// const QuizGenerator = lazy(() => import("../pages/student/QuizGenerator"));  
 
-const QuizRoom = lazy(() => import("../pages/quizroom/JoinQuizRoom"));
-const Leaderboard = lazy(() => import("../pages/quizroom/Leaderboard"));
+// const QuizRoom = lazy(() => import("../pages/quizroom/JoinQuizRoom"));
+// const Leaderboard = lazy(() => import("../pages/quizroom/Leaderboard"));
 
 type RequireAuthProps = {
   children: ReactNode;
@@ -48,6 +49,7 @@ export default function Router() {
 
         <Routes>
           {/* Public */}
+          <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -64,62 +66,62 @@ export default function Router() {
               }
             />
 
-            <Route
+            {/* <Route
               path="/student/notes"
               element={
                 <RequireAuth roles={["STUDENT"]}>
                   <Notes />
                 </RequireAuth>
               }
-            />
+            /> */}
 
-            <Route
+            {/* <Route
               path="/student/flashcards"
               element={
                 <RequireAuth roles={["STUDENT"]}>
                   <Flashcards />
                 </RequireAuth>
               }
-            />
+            /> */}
 
-            <Route
+            {/* <Route
               path="/student/quiz-generator"
               element={
                 <RequireAuth roles={["STUDENT"]}>
                   <QuizGenerator />
                 </RequireAuth>
               }
-            />
+            /> */}
 
             {/* LECTURER Dashboard */}
-            <Route
+            {/* <Route
               path="/lecturer/dashboard"
               element={
                 <RequireAuth roles={["LECTURER", "ADMIN"]}>
                   <LecturerDashboard />
                 </RequireAuth>
               }
-            />
+            /> */}
 
             {/* Quiz Room */}
-            <Route
+            {/* <Route
               path="/quiz-room"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <QuizRoom />
                 </RequireAuth>
               }
-            />
+            /> */}
 
             {/* Leaderboard */}
-            <Route
+            {/* <Route
               path="/leaderboard/:roomId"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Leaderboard />
                 </RequireAuth>
               }
-            />
+            /> */}
 
           </Route>
         </Routes>
