@@ -5,9 +5,14 @@ const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState(() => {
+  try {
     const saved = localStorage.getItem("user");
     return saved ? JSON.parse(saved) : null;
-  });
+  } catch (err) {
+    console.warn("Failed to parse user from localStorage", err);
+    localStorage.removeItem("user"); // clean bad value
+    return null;
+  }});
 
   const [loading, setLoading] = useState(true);
 
@@ -15,10 +20,16 @@ export const AuthProvider = ({ children }: any) => {
     const token = localStorage.getItem("accessToken");
 
     if (token) {
-      getMe()
+        getMe()
         .then((res) => {
-          setUser(res.data);
-          localStorage.setItem("user", JSON.stringify(res.data));
+          const fetchedUser = res.user; 
+          if (fetchedUser) {
+            setUser(fetchedUser);
+            localStorage.setItem("user", JSON.stringify(fetchedUser));
+          } else {
+            setUser(null);
+            localStorage.removeItem("user");
+          }
         })
         .catch(() => {
           setUser(null);
@@ -26,8 +37,8 @@ export const AuthProvider = ({ children }: any) => {
         })
         .finally(() => setLoading(false));
     } else {
-      setUser(null);
-      setLoading(false);
+        setUser(null);
+        setLoading(false);
     }
   }, []);
 

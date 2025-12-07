@@ -32,7 +32,7 @@ export default function StudentDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <Link
-          to="/flashcards"
+          to="/student/flashcards"
           className="p-6 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 flex flex-col gap-2"
         >
           <h3 className="text-xl font-semibold">View Flashcards</h3>
@@ -42,7 +42,7 @@ export default function StudentDashboard() {
         </Link>
 
         <Link
-          to="/quizzes"
+          to="/student/quizzes"
           className="p-6 bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-700 flex flex-col gap-2"
         >
           <h3 className="text-xl font-semibold">My Quizzes</h3>
@@ -52,7 +52,7 @@ export default function StudentDashboard() {
         </Link>
 
         <Link
-          to="/attempts"
+          to="/student/attempts"
           className="p-6 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 flex flex-col gap-2"
         >
           <h3 className="text-xl font-semibold">My Attempts</h3>
@@ -62,7 +62,7 @@ export default function StudentDashboard() {
         </Link>
 
         <Link
-          to="/join-room"
+          to="/student/join-room"
           className="p-6 bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 flex flex-col gap-2"
         >
           <h3 className="text-xl font-semibold">Join Live Quiz Room</h3>

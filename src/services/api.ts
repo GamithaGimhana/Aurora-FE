@@ -40,7 +40,9 @@ api.interceptors.response.use(
         const res = await refreshTokens(refreshToken!);
 
         localStorage.setItem("accessToken", res.accessToken);
-        original.headers.Authorization = `Bearer ${res.accessToken}`;
+        localStorage.setItem("refreshToken", res.refreshToken);
+        
+        original.headers.Authorization = `Bearer ${res.accessToken}`; 
         return axios(original);
       } catch (err) {
         localStorage.clear();

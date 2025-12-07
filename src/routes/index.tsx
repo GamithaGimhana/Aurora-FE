@@ -11,9 +11,10 @@ const Register = lazy(() => import("../pages/Register"));
 const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
 const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
 
-// const Notes = lazy(() => import("../pages/student/Notes"));
-// const Flashcards = lazy(() => import("../pages/student/Flashcards"));
-// const QuizGenerator = lazy(() => import("../pages/student/QuizGenerator"));  
+const Notes = lazy(() => import("../pages/student/Notes"));
+const CreateNote = lazy(() => import("../pages/student/CreateNote"));
+const Flashcards = lazy(() => import("../pages/student/Flashcards"));
+const QuizGenerator = lazy(() => import("../pages/student/QuizGenerator"));  
 
 // const QuizRoom = lazy(() => import("../pages/quizroom/JoinQuizRoom"));
 // const Leaderboard = lazy(() => import("../pages/quizroom/Leaderboard"));
@@ -66,32 +67,41 @@ export default function Router() {
               }
             />
 
-            {/* <Route
+            <Route
               path="/student/notes"
               element={
-                <RequireAuth roles={["STUDENT"]}>
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Notes />
                 </RequireAuth>
               }
-            /> */}
+            />
 
-            {/* <Route
+            <Route
+              path="/student/notes/create"
+              element={
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <CreateNote />
+                </RequireAuth>
+              }
+            />
+
+            <Route
               path="/student/flashcards"
               element={
-                <RequireAuth roles={["STUDENT"]}>
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Flashcards />
                 </RequireAuth>
               }
-            /> */}
+            />
 
-            {/* <Route
+            <Route
               path="/student/quiz-generator"
               element={
-                <RequireAuth roles={["STUDENT"]}>
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <QuizGenerator />
                 </RequireAuth>
               }
-            /> */}
+            />
 
             {/* LECTURER Dashboard */}
             <Route

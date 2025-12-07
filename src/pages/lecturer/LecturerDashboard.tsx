@@ -37,7 +37,7 @@ export default function LecturerDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         <Link
-          to="/notes/create"
+          to="/lecturer/notes/create"
           className="p-6 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition-all"
         >
           <h3 className="text-xl font-semibold">Create Notes</h3>
@@ -45,7 +45,7 @@ export default function LecturerDashboard() {
         </Link>
 
         <Link
-          to="/flashcards/create"
+          to="/lecturer/flashcards/create"
           className="p-6 bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-700 transition-all"
         >
           <h3 className="text-xl font-semibold">Create Flashcards</h3>
@@ -53,7 +53,7 @@ export default function LecturerDashboard() {
         </Link>
 
         <Link
-          to="/quiz/create"
+          to="/lecturer/quiz/create"
           className="p-6 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 transition-all"
         >
           <h3 className="text-xl font-semibold">Create Quiz</h3>
@@ -61,7 +61,7 @@ export default function LecturerDashboard() {
         </Link>
 
         <Link
-          to="/rooms/create"
+          to="/lecturer/rooms/create"
           className="p-6 bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 transition-all"
         >
           <h3 className="text-xl font-semibold">Create Quiz Room</h3>
