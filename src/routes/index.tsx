@@ -9,7 +9,7 @@ const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 
 const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
-// const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
+const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
 
 // const Notes = lazy(() => import("../pages/student/Notes"));
 // const Flashcards = lazy(() => import("../pages/student/Flashcards"));
@@ -94,14 +94,14 @@ export default function Router() {
             /> */}
 
             {/* LECTURER Dashboard */}
-            {/* <Route
+            <Route
               path="/lecturer/dashboard"
               element={
                 <RequireAuth roles={["LECTURER", "ADMIN"]}>
                   <LecturerDashboard />
                 </RequireAuth>
               }
-            /> */}
+            />
 
             {/* Quiz Room */}
             {/* <Route
