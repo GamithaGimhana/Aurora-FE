@@ -15,7 +15,7 @@ export default function Notes() {
   const loadNotes = async () => {
     try {
       const res = await getMyNotes();
-      setNotes(res.data || []);
+      setNotes(res || []);
     } catch (err) {
       console.error(err);
       alert("Failed to load notes");
