@@ -16,7 +16,8 @@ const CreateNote = lazy(() => import("../pages/student/CreateNote"));
 const Flashcards = lazy(() => import("../pages/student/Flashcards"));
 const CreateFlashcard = lazy(() => import("../pages/student/CreateFlashcard"));
 const FlashcardStudy = lazy(() => import("../pages/student/FlashcardStudy"));
-const QuizGenerator = lazy(() => import("../pages/student/QuizGenerator"));  
+const Quizzes = lazy(() => import("../pages/student/Quizzes"));
+const CreateQuiz = lazy(() => import("../pages/student/CreateQuiz"));
 
 // const QuizRoom = lazy(() => import("../pages/quizroom/JoinQuizRoom"));
 // const Leaderboard = lazy(() => import("../pages/quizroom/Leaderboard"));
@@ -115,10 +116,19 @@ export default function Router() {
             />
 
             <Route
-              path="/student/quiz-generator"
+              path="/student/quizzes"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
-                  <QuizGenerator />
+                  <Quizzes />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/student/quizzes/create"
+              element={
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <CreateQuiz />
                 </RequireAuth>
               }
             />

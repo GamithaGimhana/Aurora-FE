@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getMyFlashcards } from "../../services/flashcards";
-import { useNavigate } from "react-router-dom";
 
 interface Flashcard {
   _id: string;
@@ -10,79 +10,112 @@ interface Flashcard {
 }
 
 export default function FlashcardStudy() {
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const topic = params.get("topic");
+
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await getMyFlashcards();
-        setCards(res.data);
+        const res = await getMyFlashcards(topic || undefined);
+        setCards(res.data || []);
       } catch {
         alert("Failed to load flashcards");
       } finally {
         setLoading(false);
       }
     };
+
     load();
-  }, []);
-
-  const shuffle = () => {
-    const shuffled = [...cards].sort(() => Math.random() - 0.5);
-    setCards(shuffled);
-    setIndex(0);
-    setFlipped(false);
-  };
-
-  const next = () => {
-    if (index < cards.length - 1) {
-      setIndex(index + 1);
-      setFlipped(false);
-    }
-  };
-
-  const prev = () => {
-    if (index > 0) {
-      setIndex(index - 1);
-      setFlipped(false);
-    }
-  };
+  }, [topic]);
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
-  if (cards.length === 0) return <div>No flashcards to study.</div>;
+
+  if (cards.length === 0) {
+    return (
+      <div className="text-center mt-10">
+        <p>No flashcards to study.</p>
+        <button
+          className="mt-4 px-4 py-2 bg-gray-600 text-white rounded"
+          onClick={() => navigate(-1)}
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   const card = cards[index];
 
-  return (
-    <div className="max-w-xl mx-auto text-center py-10">
-      
-      <h1 className="text-3xl font-bold mb-4">Study Mode</h1>
-      <p className="text-gray-500 mb-6">
-        {index + 1} / {cards.length}
-      </p>
+  const next = () => {
+    setFlipped(false);
+    setIndex((i) => (i + 1) % cards.length);
+  };
 
-      <div
-        className="bg-white shadow-xl rounded-xl p-8 cursor-pointer min-h-[200px]"
-        onClick={() => setFlipped(!flipped)}
-      >
-        {!flipped ? (
-          <h2 className="text-xl font-bold">{card.question}</h2>
-        ) : (
-          <p className="text-lg text-indigo-600 font-medium">{card.answer}</p>
-        )}
+  const prev = () => {
+    setFlipped(false);
+    setIndex((i) => (i - 1 + cards.length) % cards.length);
+  };
+
+  const shuffle = () => {
+    setFlipped(false);
+    setCards([...cards].sort(() => Math.random() - 0.5));
+    setIndex(0);
+  };
+
+  return (
+    <div className="max-w-xl mx-auto mt-10">
+
+      {/* Progress */}
+      <div className="text-center text-sm text-gray-500 mb-4">
+        {index + 1} / {cards.length} • Topic: {card.topic}
       </div>
 
-      <div className="flex justify-center gap-4 mt-6">
+      {/* Card */}
+      <div
+        className="h-64 cursor-pointer"
+        style={{ perspective: 1000 }}
+        onClick={() => setFlipped(!flipped)}
+      >
+        <div
+          className={`relative w-full h-full transition-transform duration-500 ${
+            flipped ? "rotate-y-180" : ""
+          }`}
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {/* FRONT */}
+          <div
+            className="absolute inset-0 bg-white rounded-xl shadow-xl p-6 flex items-center justify-center text-center"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <h2 className="text-xl font-semibold">{card.question}</h2>
+          </div>
+
+          {/* BACK */}
+          <div
+            className="absolute inset-0 bg-indigo-600 text-white rounded-xl shadow-xl p-6 flex items-center justify-center text-center"
+            style={{
+              transform: "rotateY(180deg)",
+              backfaceVisibility: "hidden",
+            }}
+          >
+            <p className="text-lg">{card.answer}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex justify-between mt-6">
         <button
           onClick={prev}
-          disabled={index === 0}
-          className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded"
         >
-          Previous
+          ◀ Prev
         </button>
 
         <button
@@ -94,20 +127,21 @@ export default function FlashcardStudy() {
 
         <button
           onClick={next}
-          disabled={index === cards.length - 1}
-          className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+          className="px-4 py-2 bg-gray-200 rounded"
         >
-          Next
+          Next ▶
         </button>
       </div>
 
-      <button
-        onClick={() => navigate("/student/flashcards")}
-        className="mt-8 text-red-600 underline"
-      >
-        Exit Study Mode
-      </button>
-
+      {/* Exit */}
+      <div className="text-center mt-6">
+        <button
+          onClick={() => navigate("/student/flashcards")}
+          className="text-red-600 font-medium"
+        >
+          Exit Study Mode
+        </button>
+      </div>
     </div>
   );
 }
