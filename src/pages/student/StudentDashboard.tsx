@@ -1,139 +1,151 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getMyNotes } from "../../services/notes";
+import type { Note } from "../../services/notes";
+
+
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse bg-white border rounded-xl p-6 space-y-3">
+      <div className="h-4 bg-slate-200 rounded w-1/3" />
+      <div className="h-3 bg-slate-200 rounded w-full" />
+      <div className="h-3 bg-slate-200 rounded w-5/6" />
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="text-center py-16">
+      <div className="text-5xl mb-4">📘</div>
+      <h3 className="text-lg font-semibold">No notes yet</h3>
+      <p className="text-sm text-gray-500 mt-2">
+        Create your first note and start learning smarter.
+      </p>
+      <Link
+        to="/student/notes"
+        className="inline-block mt-6 px-5 py-2 bg-black text-white rounded-lg text-sm"
+      >
+        Create Note
+      </Link>
+    </div>
+  );
+}
 
 export default function StudentDashboard() {
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const res = await getMyNotes();
+        setNotes(res.data.slice(0, 3)); // recent 3
+      } catch (err) {
+        console.error("Failed to load notes", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadNotes();
+  }, []);
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
 
-      {/* =========================
-          SIDEBAR
-      ============================ */}
-      <aside className="w-64 bg-white shadow-md px-6 py-8 flex flex-col">
+      {/* Top Bar */}
+      <header className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-semibold">Study Dashboard</h1>
 
-        {/* Logo */}
-        <div className="flex items-center gap-2 mb-10">
-          <div className="w-6 h-6 rounded-full border-2 border-blue-600"></div>
-          <h1 className="text-xl font-bold">Easy Study</h1>
-        </div>
-
-        {/* Create New Button */}
-        <button className="w-full bg-blue-600 text-white py-3 rounded-xl mb-8 hover:bg-blue-700">
-          + Create New
-        </button>
-
-        {/* Nav Items */}
-        <nav className="flex flex-col gap-6 text-gray-700">
-          <Link to="/student/dashboard" className="flex items-center gap-3 text-blue-600 font-semibold">
-            <span className="text-lg">▦</span> Dashboard
+          <Link
+            to="/student/quiz-generator"
+            className="bg-black text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-800"
+          >
+            + New Study Material
           </Link>
-
-          <Link to="/student/upgrade" className="flex items-center gap-3 hover:text-black">
-            <span className="text-lg">🛡</span> Upgrade
-          </Link>
-
-          <Link to="/student/profile" className="flex items-center gap-3 hover:text-black">
-            <span className="text-lg">👤</span> Profile
-          </Link>
-        </nav>
-      </aside>
-
-      {/* =========================
-          MAIN CONTENT
-      ============================ */}
-      <main className="flex-1 px-10 py-8">
-
-        {/* Hero Banner */}
-        <div className="w-full bg-blue-600 text-white rounded-xl p-10 flex justify-between items-center mb-10 shadow">
-          <div>
-            <h2 className="text-3xl font-bold">Hello, Game Play</h2>
-            <p className="mt-2 text-white/90">
-              Welcome Back, It's time to get back and start learning new course
-            </p>
-          </div>
-
-          <img
-            src="/banner-illustration.png"
-            alt="Laptop"
-            className="w-40 h-40 object-contain"
-          />
         </div>
+      </header>
 
-        {/* Study Materials Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">
-            Your Study Material
-          </h3>
+      {/* Content */}
+      <main className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-12 gap-8">
 
-          <button className="flex items-center gap-2 text-gray-600 px-4 py-2 border rounded-lg hover:bg-gray-100">
-            🔄 Refresh
-          </button>
-        </div>
+        {/* Activity Feed */}
+        <section className="col-span-12 lg:col-span-8">
+          <div className="bg-white border rounded-xl">
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          {/* Card */}
-          <div className="bg-white rounded-xl shadow p-5">
-            <div className="flex justify-between items-start">
-              <img src="/book-icon.png" className="w-12 h-12" />
-              <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
-                20 Dec 2024
-              </span>
+            <div className="p-6 border-b flex justify-between items-center">
+              <h2 className="font-semibold text-lg">Recent Notes</h2>
+              <Link
+                to="/student/notes"
+                className="text-sm text-gray-500 hover:text-black"
+              >
+                View all
+              </Link>
             </div>
 
-            <h4 className="text-lg font-semibold mt-4">
-              Full Stack React Developer Interview Prep
-            </h4>
+            {/* Loading */}
+            {loading && (
+              <div className="p-6 grid gap-4">
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </div>
+            )}
 
-            <p className="text-gray-600 mt-2 text-sm">
-              This course prepares you for full-stack React developer interviews…
-            </p>
+            {/* Empty */}
+            {!loading && notes.length === 0 && <EmptyState />}
 
-            <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg">
-              View
-            </button>
+            {/* Notes */}
+            {!loading && notes.length > 0 && (
+              <div className="divide-y">
+                {notes.map((note) => (
+                  <div key={note._id} className="p-6 hover:bg-slate-50">
+                    <p className="font-medium">{note.title}</p>
+                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                      {note.content}
+                    </p>
+
+                    <Link
+                      to={`/student/notes/${note._id}`}
+                      className="inline-block mt-3 text-sm text-blue-600"
+                    >
+                      Open →
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+        </section>
 
-          {/* Duplicate card example 2 */}
-          <div className="bg-white rounded-xl shadow p-5">
-            <div className="flex justify-between items-start">
-              <img src="/book-icon.png" className="w-12 h-12" />
-              <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
-                20 Dec 2024
-              </span>
+        {/* Right Panel */}
+        <aside className="col-span-12 lg:col-span-4 space-y-6">
+
+          <div className="bg-white border rounded-xl p-6">
+            <h3 className="font-semibold mb-4">Quick Actions</h3>
+            <div className="space-y-3">
+              <Link className="block border rounded-lg px-4 py-3 text-sm hover:bg-slate-100" to="/student/notes">
+                Create Notes
+              </Link>
+              <Link className="block border rounded-lg px-4 py-3 text-sm hover:bg-slate-100" to="/student/flashcards">
+                Create Flashcards
+              </Link>
+              <Link className="block border rounded-lg px-4 py-3 text-sm hover:bg-slate-100" to="/student/quizzes">
+                Create Quiz
+              </Link>
             </div>
-
-            <h4 className="text-lg font-semibold mt-4">Easy Python</h4>
-
-            <p className="text-gray-600 mt-2 text-sm">
-              A concise introduction to Python programming fundamentals.
-            </p>
-
-            <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg">
-              View
-            </button>
           </div>
 
-          {/* Duplicate card example 3 */}
-          <div className="bg-white rounded-xl shadow p-5">
-            <div className="flex justify-between items-start">
-              <img src="/book-icon.png" className="w-12 h-12" />
-              <span className="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
-                20 Dec 2024
-              </span>
-            </div>
-
-            <h4 className="text-lg font-semibold mt-4">ReactJS for Beginners</h4>
-
-            <p className="text-gray-600 mt-2 text-sm">
-              A beginner-friendly introduction to ReactJS.
+          <div className="bg-black text-white rounded-xl p-6">
+            <h3 className="font-semibold mb-2">Study Tip</h3>
+            <p className="text-sm text-white/80">
+              Writing notes in your own words improves long-term retention.
             </p>
-
-            <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg">
-              View
-            </button>
           </div>
 
-        </div>
+        </aside>
       </main>
     </div>
   );

@@ -13,37 +13,77 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between">
-        
-        <Link to="/" className="text-2xl font-semibold">AI Quiz</Link>
+    <header className="sticky top-0 z-40 bg-white border-b">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
-        <nav className="flex items-center gap-6">
+        {/* Left: Brand */}
+        <Link
+          to="/"
+          className="text-lg font-semibold tracking-tight text-black"
+        >
+          Aurora
+        </Link>
+
+        {/* Center: Navigation */}
+        <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
           {user?.role?.includes("STUDENT") && (
             <>
-              <Link to="/student/dashboard">Dashboard</Link>
-              <Link to="/student/notes">Notes</Link>
-              <Link to="/student/flashcards">Flashcards</Link>
-              <Link to="/student/quiz-generator">Quiz Generator</Link>
+              <NavLink to="/student/dashboard">Dashboard</NavLink>
+              <NavLink to="/student/notes">Notes</NavLink>
+              <NavLink to="/student/flashcards">Flashcards</NavLink>
+              <NavLink to="/student/quizzes">Quizzes</NavLink>
             </>
           )}
 
           {user?.role?.includes("LECTURER") && (
             <>
-              <Link to="/lecturer/dashboard">Lecturer Panel</Link>
-              <Link to="/quiz-room">Quiz Room</Link>
+              <NavLink to="/lecturer/dashboard">Dashboard</NavLink>
+              <NavLink to="/quiz-room">Quiz Room</NavLink>
             </>
           )}
+        </nav>
 
+        {/* Right: User actions */}
+        <div className="flex items-center gap-4">
+
+          {/* User badge */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm">
+            <span className="font-medium">
+              {user?.name ?? "User"}
+            </span>
+            <span className="text-gray-400 text-xs">
+              {user?.role?.[0]}
+            </span>
+          </div>
+
+          {/* Logout */}
           <button
             onClick={logout}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg"
+            className="text-sm px-4 py-2 rounded-lg border hover:bg-slate-100 transition"
           >
             Logout
           </button>
-        </nav>
-
+        </div>
       </div>
     </header>
+  );
+}
+
+/* ---------- Small helper ---------- */
+
+function NavLink({
+  to,
+  children,
+}: {
+  to: string;
+  children: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className="hover:text-black transition"
+    >
+      {children}
+    </Link>
   );
 }

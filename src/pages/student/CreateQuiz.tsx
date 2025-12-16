@@ -41,6 +41,12 @@ export default function CreateQuiz() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    for (const q of questions) {
+      if (!q.question || !q.answer || q.options.some(opt => !opt)) {
+        return alert("Please fill all fields for all questions");
+      }
+    }
+
     await createQuiz({
       title,
       description,
