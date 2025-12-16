@@ -22,7 +22,7 @@ export default function FlashcardStudy() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await getMyFlashcards(topic || undefined);
+        const res = await getMyFlashcards({ page: 1, limit: 100, topic: topic || undefined });
         setCards(res.data || []);
       } catch {
         alert("Failed to load flashcards");

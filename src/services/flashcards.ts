@@ -5,7 +5,6 @@ export const createFlashcard = async (data: {
   back: string;
   topic: string;
 }) => {
-  // map UI -> backend field names
   const payload = {
     question: data.front,
     answer: data.back,
@@ -13,13 +12,21 @@ export const createFlashcard = async (data: {
   };
 
   const res = await api.post("/flashcards/create", payload);
-  // backend returns { message, data: newFlashcard }
-  return res.data; // keep full response so caller can inspect message/data
+  return res.data;
 };
 
-export const getMyFlashcards = async (topic?: string) => {
-  const url = topic ? `/flashcards/me?topic=${encodeURIComponent(topic)}` : "/flashcards/me";
-  const res = await api.get(url);
+export const getMyFlashcards = async (params?: {
+  page?: number;
+  limit?: number;
+  topic?: string;
+}) => {
+  const query = new URLSearchParams();
+
+  if (params?.page) query.append("page", String(params.page));
+  if (params?.limit) query.append("limit", String(params.limit));
+  if (params?.topic) query.append("topic", params.topic);
+
+  const res = await api.get(`/flashcards/me?${query.toString()}`);
   return res.data;
 };
 

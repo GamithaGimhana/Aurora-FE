@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getMyFlashcards, deleteFlashcard } from "../../services/flashcards";
 import { Link } from "react-router-dom";
+import { getMyFlashcards, deleteFlashcard } from "../../services/flashcards";
 
 interface Flashcard {
   _id: string;
@@ -11,56 +11,59 @@ interface Flashcard {
 
 export default function Flashcards() {
   const [cards, setCards] = useState<Flashcard[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [flippedCard, setFlippedCard] = useState<string | null>(null);
   const [topics, setTopics] = useState<string[]>([]);
   const [selectedTopic, setSelectedTopic] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const load = async (topic?: string) => {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchCards = async ( pageNumber = 1, topic?: string ) => {
     try {
-      const res = await getMyFlashcards(topic);
-      const list: Flashcard[] = res.data;
+      const res = await getMyFlashcards({
+        page: pageNumber,
+        limit: 6,
+        topic,
+      });
+
+      const list: Flashcard[] = res.data ?? [];
 
       setCards(list);
+      setTotalPages(res.totalPages ?? 1);
+      setPage(pageNumber);
 
-      const uniqueTopics = [...new Set(list.map((c) => c.topic))] as string[];
+      const uniqueTopics: string[] = Array.from(
+        new Set(list.map((c) => c.topic))
+      );
       setTopics(uniqueTopics);
 
-    } catch (err) {
-      console.error(err);
-      alert("Failed to load flashcards");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    load();
+    fetchCards();
   }, []);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this flashcard?")) return;
-
-    try {
-      await deleteFlashcard(id);
-      load(selectedTopic);
-    } catch {
-      alert("Failed to delete flashcard");
-    }
+    await deleteFlashcard(id);
+    fetchCards(page, selectedTopic || undefined);
   };
 
   const handleTopicChange = (value: string) => {
     setSelectedTopic(value);
-    load(value || undefined);
+    fetchCards(1, value || undefined);
   };
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto px-6 py-10">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">My Flashcards</h1>
 
         <div className="flex gap-3">
@@ -80,7 +83,7 @@ export default function Flashcards() {
         </div>
       </div>
 
-      {/* Topic Filter */}
+      {/* Filters */}
       <div className="mb-6">
         <select
           value={selectedTopic}
@@ -96,66 +99,54 @@ export default function Flashcards() {
         </select>
       </div>
 
-      {/* Flashcard List */}
+      {/* Grid */}
       {cards.length === 0 ? (
         <p>No flashcards found.</p>
       ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {cards.map((c) => {
-            const isFlipped = flippedCard === c._id;
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cards.map((c) => (
+            <div
+              key={c._id}
+              className="bg-white p-5 rounded-xl shadow hover:shadow-lg transition"
+            >
+              <h3 className="font-semibold mb-2">{c.question}</h3>
+              <p className="text-sm text-gray-500">Topic: {c.topic}</p>
 
-            return (
-              <div key={c._id} className="relative h-48">
-                <div
-                  className="w-full h-full rounded-xl shadow-xl cursor-pointer"
-                  style={{
-                    perspective: 1000,
-                  }}
-                  onClick={() => setFlippedCard(isFlipped ? null : c._id)}
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => handleDelete(c._id)}
+                  className="text-red-600 text-sm font-medium"
                 >
-                  <div
-                    className={`relative w-full h-full transition-transform duration-500 transform ${
-                      isFlipped ? "rotate-y-180" : ""
-                    }`}
-                    style={{ transformStyle: "preserve-3d" }}
-                  >
-                    {/* FRONT */}
-                    <div
-                      className="absolute inset-0 bg-white border rounded-xl p-4"
-                      style={{ backfaceVisibility: "hidden" }}
-                    >
-                      <h3 className="text-lg font-semibold">{c.question}</h3>
-                      <p className="text-sm text-gray-500 mt-2">
-                        Topic: {c.topic}
-                      </p>
-                    </div>
-
-                    {/* BACK */}
-                    <div
-                      className="absolute inset-0 bg-indigo-600 text-white rounded-xl p-4 flex flex-col justify-center items-center"
-                      style={{ transform: "rotateY(180deg)", backfaceVisibility: "hidden" }}
-                    >
-                      <h3 className="text-lg font-semibold">Answer</h3>
-                      <p className="mt-2">{c.answer}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Delete */}
-                <div className="flex justify-end mt-2">
-                  <button
-                    className="text-red-600 font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(c._id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
+                  Delete
+                </button>
               </div>
-            );
-          })}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-4 mt-10">
+          <button
+            disabled={page === 1}
+            onClick={() => fetchCards(page - 1, selectedTopic || undefined)}
+            className="px-4 py-2 rounded bg-gray-200 disabled:opacity-50"
+          >
+            Prev
+          </button>
+
+          <span className="px-4 py-2">
+            Page {page} of {totalPages}
+          </span>
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => fetchCards(page + 1, selectedTopic || undefined)}
+            className="px-4 py-2 rounded bg-gray-200 disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
       )}
     </div>
