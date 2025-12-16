@@ -13,8 +13,8 @@ export interface NotesResponse {
   page: number;
 }
 
-export const getMyNotes = async (): Promise<NotesResponse> => {
-  const res = await api.get("/notes/me");
+export const getMyNotes = async (page: number = 1, limit: number = 6): Promise<NotesResponse> => {
+  const res = await api.get(`/notes/me?page=${page}&limit=${limit}`);
   return res.data;
 };
 
@@ -25,11 +25,6 @@ export const createNote = async (data: {
   const res = await api.post("/notes/create", data);
   return res.data;
 };
-
-// export const getMyNotes = async (page = 1, limit = 6) => {
-//   const res = await api.get(`/notes/me?page=${page}&limit=${limit}`);
-//   return res.data;
-// };
 
 export const deleteNote = async (id: string) => {
   const res = await api.delete(`/notes/delete/${id}`);
