@@ -1,12 +1,49 @@
 import { Link } from "react-router-dom";
 
-/* ---------- Small UI Blocks ---------- */
+/* ---------- Icons ---------- */
+const DocumentIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+  </svg>
+);
+const FlashcardIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6" />
+  </svg>
+);
+const QuizIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+const PresentationIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+  </svg>
+);
+const SparklesIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+  </svg>
+);
+const FolderIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+  </svg>
+);
 
-function StatCard({ title, value }: { title: string; value: string }) {
+/* ---------- UI Blocks ---------- */
+
+function StatCard({ title, value, icon: Icon, color }: { title: string; value: string, icon: any, color: string }) {
   return (
-    <div className="bg-white border rounded-xl p-6">
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className="text-3xl font-semibold mt-2">{value}</p>
+    <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition-shadow">
+      <div>
+        <p className="text-sm font-medium text-gray-500">{title}</p>
+        <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+      </div>
+      <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>
+        <Icon className={`w-8 h-8 ${color.replace('bg-', 'text-')}`} />
+      </div>
     </div>
   );
 }
@@ -15,22 +52,43 @@ function ActionCard({
   title,
   description,
   to,
+  icon: Icon,
+  special = false,
 }: {
   title: string;
   description: string;
   to: string;
+  icon: any;
+  special?: boolean;
 }) {
   return (
     <Link
       to={to}
-      className="group bg-white border rounded-xl p-6 hover:bg-slate-50 transition"
+      className={`group relative flex flex-col p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+        special
+          ? "bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100 hover:border-indigo-200"
+          : "bg-white border-gray-200 hover:border-gray-300"
+      }`}
     >
-      <h3 className="font-semibold text-lg group-hover:text-black">
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors ${
+        special ? "bg-white shadow-sm text-indigo-600" : "bg-gray-50 text-gray-900 group-hover:bg-black group-hover:text-white"
+      }`}>
+        <Icon />
+      </div>
+      
+      <h3 className={`font-bold text-lg ${special ? "text-indigo-900" : "text-gray-900"}`}>
         {title}
       </h3>
-      <p className="text-sm text-gray-500 mt-1">
+      
+      <p className={`text-sm mt-2 leading-relaxed ${special ? "text-indigo-700/80" : "text-gray-500"}`}>
         {description}
       </p>
+
+      {special && (
+        <div className="absolute top-4 right-4">
+             <span className="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">New</span>
+        </div>
+      )}
     </Link>
   );
 }
@@ -39,69 +97,82 @@ function ActionCard({
 
 export default function LecturerDashboard() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-900">
 
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
+      <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
 
         {/* Header */}
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Lecturer Dashboard
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Manage your teaching materials and assessments
-          </p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-gray-200 pb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+              Lecturer Dashboard
+            </h1>
+            <p className="text-base text-gray-500 mt-2">
+              Manage your teaching materials, assessments, and track student progress.
+            </p>
+          </div>
+          <div className="text-sm text-gray-400 font-medium">
+             Academic Year 2026
+          </div>
         </div>
 
         {/* Stats */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <StatCard title="Notes" value="0" />
-          <StatCard title="Flashcards" value="0" />
-          <StatCard title="Quizzes" value="0" />
-          <StatCard title="Quiz Rooms" value="0" />
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard title="Active Notes" value="0" icon={DocumentIcon} color="bg-blue-500 text-blue-500" />
+          <StatCard title="Flashcard Sets" value="0" icon={FlashcardIcon} color="bg-orange-500 text-orange-500" />
+          <StatCard title="Total Quizzes" value="0" icon={QuizIcon} color="bg-green-500 text-green-500" />
+          <StatCard title="Live Rooms" value="0" icon={PresentationIcon} color="bg-purple-500 text-purple-500" />
         </section>
 
         {/* Actions */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">
-            Create & Manage
+          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span className="w-1 h-6 bg-black rounded-full"></span>
+            Management Console
           </h2>
 
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
             <ActionCard
               title="Create Notes"
-              description="Write structured study notes for students"
+              description="Write structured study notes and distribute them to your students."
               to="/lecturer/notes/create"
+              icon={DocumentIcon}
             />
 
             <ActionCard
               title="Create Flashcards"
-              description="Add flashcards to improve retention"
+              description="Design active recall decks to help students retain information better."
               to="/lecturer/flashcards/create"
+              icon={FlashcardIcon}
             />
 
             <ActionCard
               title="Create Quiz"
-              description="Build quizzes with multiple question types"
+              description="Build comprehensive assessments with multiple choice questions."
               to="/lecturer/quiz/create"
+              icon={QuizIcon}
             />
 
             <ActionCard
               title="Create Quiz Room"
-              description="Generate live quiz rooms for real-time sessions"
+              description="Launch a live, interactive game lobby for classroom engagement."
               to="/lecturer/rooms/create"
+              icon={PresentationIcon}
             />
 
             <ActionCard
               title="My Resources"
-              description="Manage all your uploaded content"
+              description="View, edit, and manage all your previously uploaded content."
               to="/lecturer/resources"
+              icon={FolderIcon}
             />
 
             <ActionCard
               title="AI Content Generator"
-              description="Generate notes, flashcards, and quizzes using AI"
+              description="Instantly generate quizzes and notes from your raw text using AI."
               to="/ai/generate"
+              icon={SparklesIcon}
+              special={true}
             />
           </div>
         </section>
