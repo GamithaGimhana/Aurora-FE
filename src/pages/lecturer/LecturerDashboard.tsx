@@ -1,89 +1,110 @@
 import { Link } from "react-router-dom";
 
+/* ---------- Small UI Blocks ---------- */
+
+function StatCard({ title, value }: { title: string; value: string }) {
+  return (
+    <div className="bg-white border rounded-xl p-6">
+      <p className="text-sm text-gray-500">{title}</p>
+      <p className="text-3xl font-semibold mt-2">{value}</p>
+    </div>
+  );
+}
+
+function ActionCard({
+  title,
+  description,
+  to,
+}: {
+  title: string;
+  description: string;
+  to: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className="group bg-white border rounded-xl p-6 hover:bg-slate-50 transition"
+    >
+      <h3 className="font-semibold text-lg group-hover:text-black">
+        {title}
+      </h3>
+      <p className="text-sm text-gray-500 mt-1">
+        {description}
+      </p>
+    </Link>
+  );
+}
+
+/* ---------- Dashboard ---------- */
+
 export default function LecturerDashboard() {
   return (
-    <div className="min-h-screen w-full px-6 py-10">
+    <div className="min-h-screen bg-slate-50">
 
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">
-        Lecturer Dashboard
-      </h1>
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-
-        <div className="bg-white shadow-md rounded-xl p-6">
-          <h2 className="text-gray-600 text-sm mb-2">Notes</h2>
-          <p className="text-3xl font-bold text-blue-600">0</p>
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Lecturer Dashboard
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage your teaching materials and assessments
+          </p>
         </div>
 
-        <div className="bg-white shadow-md rounded-xl p-6">
-          <h2 className="text-gray-600 text-sm mb-2">Flashcards</h2>
-          <p className="text-3xl font-bold text-purple-600">0</p>
-        </div>
+        {/* Stats */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <StatCard title="Notes" value="0" />
+          <StatCard title="Flashcards" value="0" />
+          <StatCard title="Quizzes" value="0" />
+          <StatCard title="Quiz Rooms" value="0" />
+        </section>
 
-        <div className="bg-white shadow-md rounded-xl p-6">
-          <h2 className="text-gray-600 text-sm mb-2">Quizzes</h2>
-          <p className="text-3xl font-bold text-green-600">0</p>
-        </div>
+        {/* Actions */}
+        <section>
+          <h2 className="text-lg font-semibold mb-4">
+            Create & Manage
+          </h2>
 
-        <div className="bg-white shadow-md rounded-xl p-6">
-          <h2 className="text-gray-600 text-sm mb-2">Quiz Rooms</h2>
-          <p className="text-3xl font-bold text-indigo-600">0</p>
-        </div>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <ActionCard
+              title="Create Notes"
+              description="Write structured study notes for students"
+              to="/lecturer/notes/create"
+            />
 
-      </div>
+            <ActionCard
+              title="Create Flashcards"
+              description="Add flashcards to improve retention"
+              to="/lecturer/flashcards/create"
+            />
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <ActionCard
+              title="Create Quiz"
+              description="Build quizzes with multiple question types"
+              to="/lecturer/quiz/create"
+            />
 
-        <Link
-          to="/lecturer/notes/create"
-          className="p-6 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition-all"
-        >
-          <h3 className="text-xl font-semibold">Create Notes</h3>
-          <p className="text-sm opacity-80">Write structured study notes.</p>
-        </Link>
+            <ActionCard
+              title="Create Quiz Room"
+              description="Generate live quiz rooms for real-time sessions"
+              to="/lecturer/rooms/create"
+            />
 
-        <Link
-          to="/lecturer/flashcards/create"
-          className="p-6 bg-purple-600 text-white rounded-xl shadow-md hover:bg-purple-700 transition-all"
-        >
-          <h3 className="text-xl font-semibold">Create Flashcards</h3>
-          <p className="text-sm opacity-80">Add flashcards for students.</p>
-        </Link>
+            <ActionCard
+              title="My Resources"
+              description="Manage all your uploaded content"
+              to="/lecturer/resources"
+            />
 
-        <Link
-          to="/lecturer/quiz/create"
-          className="p-6 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 transition-all"
-        >
-          <h3 className="text-xl font-semibold">Create Quiz</h3>
-          <p className="text-sm opacity-80">Build question-based quizzes.</p>
-        </Link>
-
-        <Link
-          to="/lecturer/rooms/create"
-          className="p-6 bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700 transition-all"
-        >
-          <h3 className="text-xl font-semibold">Create Quiz Room</h3>
-          <p className="text-sm opacity-80">Generate live quiz rooms.</p>
-        </Link>
-
-        <Link
-          to="/lecturer/resources"
-          className="p-6 bg-cyan-600 text-white rounded-xl shadow-md hover:bg-cyan-700 transition-all"
-        >
-          <h3 className="text-xl font-semibold">My Resources</h3>
-          <p className="text-sm opacity-80">Manage all your notes & materials.</p>
-        </Link>
-
-        <Link
-          to="/ai/generate"
-          className="p-6 bg-rose-600 text-white rounded-xl shadow-md hover:bg-rose-700 transition-all"
-        >
-          <h3 className="text-xl font-semibold">AI Generate Content</h3>
-          <p className="text-sm opacity-80">Generate notes, flashcards, quizzes.</p>
-        </Link>
-
+            <ActionCard
+              title="AI Content Generator"
+              description="Generate notes, flashcards, and quizzes using AI"
+              to="/ai/generate"
+            />
+          </div>
+        </section>
       </div>
     </div>
   );
