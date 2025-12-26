@@ -13,6 +13,7 @@ const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard
 
 const Notes = lazy(() => import("../pages/student/Notes"));
 const CreateNote = lazy(() => import("../pages/student/CreateNote"));
+const ViewNote = lazy(() => import("../pages/student/ViewNote"));
 const Flashcards = lazy(() => import("../pages/student/Flashcards"));
 const CreateFlashcard = lazy(() => import("../pages/student/CreateFlashcard"));
 const FlashcardStudy = lazy(() => import("../pages/student/FlashcardStudy"));
@@ -75,6 +76,15 @@ export default function Router() {
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Notes />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/student/notes/:id"
+              element={
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <ViewNote />
                 </RequireAuth>
               }
             />
