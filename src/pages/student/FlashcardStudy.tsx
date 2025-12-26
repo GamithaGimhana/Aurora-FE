@@ -2,6 +2,37 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getMyFlashcards } from "../../services/flashcards";
 
+// --- Icons ---
+const ChevronLeft = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+  </svg>
+);
+
+const ChevronRight = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+  </svg>
+);
+
+const ShuffleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+  </svg>
+);
+
+const XMarkIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+const ArrowPathIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 animate-spin">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+  </svg>
+);
+
 interface Flashcard {
   _id: string;
   question: string;
@@ -34,23 +65,32 @@ export default function FlashcardStudy() {
     load();
   }, [topic]);
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center text-gray-400 gap-2">
+        <ArrowPathIcon /> Loading deck...
+    </div>
+  );
 
   if (cards.length === 0) {
     return (
-      <div className="text-center mt-10">
-        <p>No flashcards to study.</p>
-        <button
-          className="mt-4 px-4 py-2 bg-gray-600 text-white rounded"
-          onClick={() => navigate(-1)}
-        >
-          Go Back
-        </button>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="text-center max-w-sm bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+          <div className="text-4xl mb-4">📭</div>
+          <h3 className="text-lg font-bold text-gray-900">No flashcards found</h3>
+          <p className="text-gray-500 mt-2 mb-6">There are no cards in this topic to study right now.</p>
+          <button
+            className="w-full py-3 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition"
+            onClick={() => navigate(-1)}
+          >
+            Go Back
+          </button>
+        </div>
       </div>
     );
   }
 
   const card = cards[index];
+  const progress = ((index + 1) / cards.length) * 100;
 
   const next = () => {
     setFlipped(false);
@@ -69,78 +109,111 @@ export default function FlashcardStudy() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8 font-sans">
 
-      {/* Progress */}
-      <div className="text-center text-sm text-gray-500 mb-4">
-        {index + 1} / {cards.length} • Topic: {card.topic}
-      </div>
+      <div className="w-full max-w-2xl space-y-8">
+        
+        {/* Header / Progress */}
+        <div className="space-y-4">
+            <div className="flex justify-between items-end text-sm font-medium text-gray-500 px-1">
+                <span>Card {index + 1} of {cards.length}</span>
+                <span className="uppercase tracking-wide text-xs bg-gray-200 px-2 py-1 rounded text-gray-600">
+                    {card.topic}
+                </span>
+            </div>
+            
+            {/* Visual Progress Bar */}
+            <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                    className="h-full bg-indigo-600 transition-all duration-300 ease-out"
+                    style={{ width: `${progress}%` }}
+                />
+            </div>
+        </div>
 
-      {/* Card */}
-      <div
-        className="h-64 cursor-pointer"
-        style={{ perspective: 1000 }}
-        onClick={() => setFlipped(!flipped)}
-      >
+        {/* 3D Card Container */}
         <div
-          className={`relative w-full h-full transition-transform duration-500 ${
-            flipped ? "rotate-y-180" : ""
-          }`}
-          style={{ transformStyle: "preserve-3d" }}
+          className="relative h-80 w-full cursor-pointer group perspective-1000"
+          style={{ perspective: "1000px" }}
+          onClick={() => setFlipped(!flipped)}
         >
-          {/* FRONT */}
           <div
-            className="absolute inset-0 bg-white rounded-xl shadow-xl p-6 flex items-center justify-center text-center"
-            style={{ backfaceVisibility: "hidden" }}
-          >
-            <h2 className="text-xl font-semibold">{card.question}</h2>
-          </div>
-
-          {/* BACK */}
-          <div
-            className="absolute inset-0 bg-indigo-600 text-white rounded-xl shadow-xl p-6 flex items-center justify-center text-center"
-            style={{
-              transform: "rotateY(180deg)",
-              backfaceVisibility: "hidden",
+            className={`relative w-full h-full transition-transform duration-500 transform-style-3d ${
+              flipped ? "rotate-y-180" : ""
+            }`}
+            style={{ 
+                transformStyle: "preserve-3d",
+                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)"
             }}
           >
-            <p className="text-lg">{card.answer}</p>
+            {/* FRONT */}
+            <div
+              className="absolute inset-0 bg-white border border-gray-200 rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 text-center backface-hidden"
+              style={{ backfaceVisibility: "hidden" }}
+            >
+              <span className="absolute top-6 left-6 text-xs font-bold text-gray-400 uppercase tracking-widest">Question</span>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug">
+                {card.question}
+              </h2>
+              <p className="absolute bottom-6 text-xs text-gray-400 font-medium animate-pulse">
+                Click to flip
+              </p>
+            </div>
+
+            {/* BACK */}
+            <div
+              className="absolute inset-0 bg-indigo-600 rounded-3xl shadow-xl flex flex-col items-center justify-center p-8 text-center backface-hidden"
+              style={{
+                transform: "rotateY(180deg)",
+                backfaceVisibility: "hidden",
+              }}
+            >
+              <span className="absolute top-6 left-6 text-xs font-bold text-indigo-200 uppercase tracking-widest">Answer</span>
+              <p className="text-xl md:text-2xl font-medium text-white leading-relaxed">
+                {card.answer}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Controls */}
-      <div className="flex justify-between mt-6">
-        <button
-          onClick={prev}
-          className="px-4 py-2 bg-gray-200 rounded"
-        >
-          ◀ Prev
-        </button>
+        {/* Controls */}
+        <div className="flex items-center justify-between pt-4">
+            
+            {/* Navigation Group */}
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={prev}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition shadow-sm active:scale-95"
+                    title="Previous Card"
+                >
+                    <ChevronLeft />
+                </button>
 
-        <button
-          onClick={shuffle}
-          className="px-4 py-2 bg-yellow-500 text-white rounded"
-        >
-          Shuffle
-        </button>
+                <button
+                    onClick={shuffle}
+                    className="flex items-center gap-2 px-5 py-3 rounded-full bg-indigo-50 text-indigo-600 font-medium hover:bg-indigo-100 transition shadow-sm active:scale-95"
+                >
+                    <ShuffleIcon /> Shuffle
+                </button>
 
-        <button
-          onClick={next}
-          className="px-4 py-2 bg-gray-200 rounded"
-        >
-          Next ▶
-        </button>
-      </div>
+                <button
+                    onClick={next}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-black text-white hover:bg-gray-800 transition shadow-lg active:scale-95"
+                    title="Next Card"
+                >
+                    <ChevronRight />
+                </button>
+            </div>
 
-      {/* Exit */}
-      <div className="text-center mt-6">
-        <button
-          onClick={() => navigate("/student/flashcards")}
-          className="text-red-600 font-medium"
-        >
-          Exit Study Mode
-        </button>
+            {/* Exit Button */}
+            <button
+                onClick={() => navigate("/student/flashcards")}
+                className="flex items-center gap-2 text-gray-400 hover:text-red-500 font-medium transition-colors text-sm px-4 py-2"
+            >
+                <XMarkIcon /> Quit
+            </button>
+        </div>
+
       </div>
     </div>
   );
