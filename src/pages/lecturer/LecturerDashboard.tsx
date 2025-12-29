@@ -135,21 +135,21 @@ export default function LecturerDashboard() {
             <ActionCard
               title="Create Notes"
               description="Write structured study notes and distribute them to your students."
-              to="/lecturer/notes/create"
+              to="/student/notes/create"
               icon={DocumentIcon}
             />
 
             <ActionCard
               title="Create Flashcards"
               description="Design active recall decks to help students retain information better."
-              to="/lecturer/flashcards/create"
+              to="/student/flashcards/create"
               icon={FlashcardIcon}
             />
 
             <ActionCard
               title="Create Quiz"
               description="Build comprehensive assessments with multiple choice questions."
-              to="/lecturer/quiz/create"
+              to="/student/quiz/create"
               icon={QuizIcon}
             />
 

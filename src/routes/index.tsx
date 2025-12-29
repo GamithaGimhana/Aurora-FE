@@ -19,6 +19,9 @@ const CreateFlashcard = lazy(() => import("../pages/student/CreateFlashcard"));
 const FlashcardStudy = lazy(() => import("../pages/student/FlashcardStudy"));
 const Quizzes = lazy(() => import("../pages/student/Quizzes"));
 const CreateQuiz = lazy(() => import("../pages/student/CreateQuiz"));
+const QuizRoom = lazy(() => import("../pages/student/QuizRoom"));
+const QuizResult = lazy(() => import("../pages/student/QuizResult"));
+const JoinQuizRoom = lazy(() => import("../pages/student/JoinQuizRoom"));
 
 // const QuizRoom = lazy(() => import("../pages/quizroom/JoinQuizRoom"));
 // const Leaderboard = lazy(() => import("../pages/quizroom/Leaderboard"));
@@ -153,25 +156,35 @@ export default function Router() {
               }
             />
 
+            {/* Join Quiz Room */}
+            <Route
+              path="/student/quiz/join"
+              element={
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <JoinQuizRoom />
+                </RequireAuth>
+              }
+            />
+
             {/* Quiz Room */}
-            {/* <Route
-              path="/quiz-room"
+            <Route
+              path="/student/rooms/:roomId"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <QuizRoom />
                 </RequireAuth>
               }
-            /> */}
+            />
 
-            {/* Leaderboard */}
-            {/* <Route
-              path="/leaderboard/:roomId"
+            {/* Quiz Result / Leaderboard */}
+            <Route
+              path="/student/quiz/result/:roomId"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
-                  <Leaderboard />
+                  <QuizResult />
                 </RequireAuth>
               }
-            /> */}
+            />
 
           </Route>
         </Routes>

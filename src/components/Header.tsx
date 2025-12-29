@@ -46,7 +46,7 @@ export default function Header() {
           {user?.role?.includes("LECTURER") && (
             <>
               <NavLink to="/lecturer/dashboard">Dashboard</NavLink>
-              <NavLink to="/quiz-room">Quiz Room</NavLink>
+              <NavLink to="/student/rooms">Quiz Room</NavLink>
             </>
           )}
         </nav>
