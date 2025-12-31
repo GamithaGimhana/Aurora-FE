@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getMyFlashcards, deleteFlashcard } from "../../services/flashcards";
+import { getMyFlashcards, deleteFlashcard } from "../services/flashcards";
 
 // --- Icons ---
 const PlusIcon = () => (
@@ -126,14 +126,14 @@ export default function Flashcards() {
 
           <div className="flex flex-wrap gap-3">
             <Link
-              to="/student/flashcards/create"
+              to="/flashcards/create"
               className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition"
             >
               <PlusIcon /> Create New
             </Link>
             
             <Link
-              to={`/student/flashcards/study${selectedTopic ? `?topic=${selectedTopic}` : ""}`}
+              to={`/flashcards/study${selectedTopic ? `?topic=${selectedTopic}` : ""}`}
               className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-200"
             >
               <PlayIcon /> Study Mode

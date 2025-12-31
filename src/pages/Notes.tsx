@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getMyNotes, deleteNote } from "../../services/notes";
+import { getMyNotes, deleteNote } from "../services/notes";
 
 // --- Icons ---
 const PlusIcon = () => (
@@ -103,7 +103,7 @@ export default function Notes() {
           </div>
 
           <Link
-            to="/student/notes/create"
+            to="/notes/create"
             className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-200"
           >
             <PlusIcon /> Create Note
@@ -143,7 +143,7 @@ export default function Notes() {
                 </div>
 
                 {/* Card Content */}
-                <Link to={`/student/notes/${note._id}`} className="block flex-1">
+                <Link to={`/notes/${note._id}`} className="block flex-1">
                     <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
                     {note.title}
                     </h3>

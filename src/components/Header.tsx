@@ -37,8 +37,8 @@ export default function Header() {
           {user?.role?.includes("STUDENT") && (
             <>
               <NavLink to="/student/dashboard">Dashboard</NavLink>
-              <NavLink to="/student/notes">Notes</NavLink>
-              <NavLink to="/student/flashcards">Flashcards</NavLink>
+              <NavLink to="/notes">Notes</NavLink>
+              <NavLink to="/flashcards">Flashcards</NavLink>
               <NavLink to="/student/quizzes">Quizzes</NavLink>
             </>
           )}
@@ -46,6 +46,8 @@ export default function Header() {
           {user?.role?.includes("LECTURER") && (
             <>
               <NavLink to="/lecturer/dashboard">Dashboard</NavLink>
+              <NavLink to="/notes">Notes</NavLink>
+              <NavLink to="/flashcards">Flashcards</NavLink>
               <NavLink to="/student/rooms">Quiz Room</NavLink>
             </>
           )}

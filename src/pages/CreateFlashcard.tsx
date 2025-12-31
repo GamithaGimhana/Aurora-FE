@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFlashcard } from "../../services/flashcards";
+import { createFlashcard } from "../services/flashcards";
 import { useNavigate, Link } from "react-router-dom";
 
 // --- Icons ---

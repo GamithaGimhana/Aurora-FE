@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getNoteById, deleteNote } from "../../services/notes";
-import type { Note } from "../../services/notes";
+import { getNoteById, deleteNote } from "../services/notes";
+import type { Note } from "../services/notes";
 
 // --- Icons ---
 const ChevronLeft = () => (
@@ -37,7 +37,7 @@ export default function ViewNote() {
       } catch (err) {
         console.error("Failed to fetch note", err);
         alert("Could not load note. It might have been deleted.");
-        navigate("/student/notes");
+        navigate("/notes");
       } finally {
         setLoading(false);
       }
@@ -50,7 +50,7 @@ export default function ViewNote() {
     if (!note || !confirm("Are you sure you want to delete this note? This action cannot be undone.")) return;
     try {
       await deleteNote(note._id);
-      navigate("/student/notes");
+      navigate("/notes");
     } catch (err) {
       alert("Failed to delete note");
     }
@@ -76,7 +76,7 @@ export default function ViewNote() {
         {/* Navigation Header */}
         <div className="flex items-center justify-between mb-8">
           <Link
-            to="/student/notes"
+            to="/notes"
             className="inline-flex items-center gap-2 text-gray-500 hover:text-black transition-colors font-medium text-sm group"
           >
             <span className="group-hover:-translate-x-1 transition-transform"><ChevronLeft /></span> 

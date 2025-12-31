@@ -11,20 +11,22 @@ const Register = lazy(() => import("../pages/Register"));
 const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
 const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
 
-const Notes = lazy(() => import("../pages/student/Notes"));
-const CreateNote = lazy(() => import("../pages/student/CreateNote"));
-const ViewNote = lazy(() => import("../pages/student/ViewNote"));
-const Flashcards = lazy(() => import("../pages/student/Flashcards"));
-const CreateFlashcard = lazy(() => import("../pages/student/CreateFlashcard"));
-const FlashcardStudy = lazy(() => import("../pages/student/FlashcardStudy"));
+const Notes = lazy(() => import("../pages/Notes"));
+const CreateNote = lazy(() => import("../pages/CreateNote"));
+const ViewNote = lazy(() => import("../pages/ViewNote"));
+const Flashcards = lazy(() => import("../pages/Flashcards"));
+const CreateFlashcard = lazy(() => import("../pages/CreateFlashcard"));
+const FlashcardStudy = lazy(() => import("../pages/FlashcardStudy"));
 const Quizzes = lazy(() => import("../pages/student/Quizzes"));
-const CreateQuiz = lazy(() => import("../pages/student/CreateQuiz"));
 const QuizRoom = lazy(() => import("../pages/student/QuizRoom"));
 const QuizResult = lazy(() => import("../pages/student/QuizResult"));
-const JoinQuizRoom = lazy(() => import("../pages/student/JoinQuizRoom"));
+const JoinQuizRoom = lazy(() => import("../pages/student/JoinRoom"));
 
-// const QuizRoom = lazy(() => import("../pages/quizroom/JoinQuizRoom"));
-// const Leaderboard = lazy(() => import("../pages/quizroom/Leaderboard"));
+const CreateQuiz = lazy(() => import("../pages/lecturer/CreateQuiz"));
+const CreateQuizRoom = lazy(() => import("../pages/lecturer/CreateQuizRoom"));
+const QuestionBank = lazy(() => import("../pages/lecturer/QuestionBank"));
+const CreateQuestion = lazy(() => import("../pages/lecturer/CreateQuestion"));
+const Questions = lazy(() => import("../pages/lecturer/Questions"));
 
 type RequireAuthProps = {
   children: ReactNode;
@@ -75,7 +77,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/notes"
+              path="/notes"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Notes />
@@ -84,7 +86,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/notes/:id"
+              path="/notes/:id"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <ViewNote />
@@ -93,7 +95,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/notes/create"
+              path="/notes/create"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <CreateNote />
@@ -102,7 +104,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/flashcards"
+              path="/flashcards"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Flashcards />
@@ -111,7 +113,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/flashcards/create"
+              path="/flashcards/create"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <CreateFlashcard />
@@ -120,7 +122,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/flashcards/study"
+              path="/flashcards/study"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <FlashcardStudy />
@@ -137,21 +139,59 @@ export default function Router() {
               }
             />
 
-            <Route
-              path="/student/quizzes/create"
-              element={
-                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
-                  <CreateQuiz />
-                </RequireAuth>
-              }
-            />
-
             {/* LECTURER Dashboard */}
             <Route
               path="/lecturer/dashboard"
               element={
                 <RequireAuth roles={["LECTURER", "ADMIN"]}>
                   <LecturerDashboard />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/quizzes/create"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <CreateQuiz />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/rooms/create"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <CreateQuizRoom />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/questions"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <Questions />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/questions/create"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <CreateQuestion />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/question-bank"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <QuestionBank selected={[]} setSelected={function (ids: string[]): void {
+                    throw new Error("Function not implemented.");
+                  } } />
                 </RequireAuth>
               }
             />

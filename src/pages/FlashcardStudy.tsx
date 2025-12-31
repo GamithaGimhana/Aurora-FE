@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { getMyFlashcards } from "../../services/flashcards";
+import { getMyFlashcards } from "../services/flashcards";
 
 // --- Icons ---
 const ChevronLeft = () => (
@@ -207,7 +207,7 @@ export default function FlashcardStudy() {
 
             {/* Exit Button */}
             <button
-                onClick={() => navigate("/student/flashcards")}
+                onClick={() => navigate("/flashcards")}
                 className="flex items-center gap-2 text-gray-400 hover:text-red-500 font-medium transition-colors text-sm px-4 py-2"
             >
                 <XMarkIcon /> Quit

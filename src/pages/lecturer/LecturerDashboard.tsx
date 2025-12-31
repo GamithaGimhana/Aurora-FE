@@ -1,48 +1,69 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 /* ---------- Icons ---------- */
-const DocumentIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+const DocumentIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
   </svg>
 );
-const FlashcardIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+const FlashcardIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6" />
   </svg>
 );
-const QuizIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+const QuizIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
-const PresentationIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+const PresentationIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
   </svg>
 );
-const SparklesIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+const SparklesIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
   </svg>
 );
-const FolderIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+
+const FolderIcon = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
   </svg>
 );
 
 /* ---------- UI Blocks ---------- */
 
-function StatCard({ title, value, icon: Icon, color }: { title: string; value: string, icon: any, color: string }) {
+function StatCard({
+  title,
+  value,
+  icon: Icon,
+  color,
+  loading,
+}: {
+  title: string;
+  value: number;
+  icon: React.ElementType; // Correct Type
+  color: string;
+  loading: boolean;
+}) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center justify-between hover:shadow-md transition-shadow">
       <div>
         <p className="text-sm font-medium text-gray-500">{title}</p>
-        <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+        <p className="text-3xl font-bold text-gray-900 mt-2">
+          {loading ? "..." : value}
+        </p>
       </div>
       <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>
-        <Icon className={`w-8 h-8 ${color.replace('bg-', 'text-')}`} />
+        <Icon className={`w-8 h-8 ${color.replace("bg-", "text-")}`} />
       </div>
     </div>
   );
@@ -58,7 +79,7 @@ function ActionCard({
   title: string;
   description: string;
   to: string;
-  icon: any;
+  icon: React.ElementType; // Correct Type
   special?: boolean;
 }) {
   return (
@@ -70,23 +91,29 @@ function ActionCard({
           : "bg-white border-gray-200 hover:border-gray-300"
       }`}
     >
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors ${
-        special ? "bg-white shadow-sm text-indigo-600" : "bg-gray-50 text-gray-900 group-hover:bg-black group-hover:text-white"
-      }`}>
+      <div
+        className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors ${
+          special
+            ? "bg-white shadow-sm text-indigo-600"
+            : "bg-gray-50 text-gray-900 group-hover:bg-black group-hover:text-white"
+        }`}
+      >
         <Icon />
       </div>
-      
+
       <h3 className={`font-bold text-lg ${special ? "text-indigo-900" : "text-gray-900"}`}>
         {title}
       </h3>
-      
+
       <p className={`text-sm mt-2 leading-relaxed ${special ? "text-indigo-700/80" : "text-gray-500"}`}>
         {description}
       </p>
 
       {special && (
         <div className="absolute top-4 right-4">
-             <span className="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">New</span>
+          <span className="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">
+            New
+          </span>
         </div>
       )}
     </Link>
@@ -96,9 +123,56 @@ function ActionCard({
 /* ---------- Dashboard ---------- */
 
 export default function LecturerDashboard() {
+  const [stats, setStats] = useState({
+    notes: 0,
+    flashcards: 0,
+    quizzes: 0,
+    rooms: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const results = await Promise.allSettled([
+          api.get("/notes/me"),
+          api.get("/flashcards/me"),
+          api.get("/quizzes/me"),
+          api.get("/rooms/me"), // can 404 safely now
+        ]);
+
+        setStats({
+          notes:
+            results[0].status === "fulfilled"
+              ? results[0].value.data.data.length
+              : 0,
+
+          flashcards:
+            results[1].status === "fulfilled"
+              ? results[1].value.data.data.length
+              : 0,
+
+          quizzes:
+            results[2].status === "fulfilled"
+              ? results[2].value.data.data.length
+              : 0,
+
+          rooms:
+            results[3].status === "fulfilled"
+              ? results[3].value.data.data.length
+              : 0,
+        });
+      } catch (err) {
+        console.error("Failed to load dashboard stats", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadStats();
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900">
-
       <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
 
         {/* Header */}
@@ -112,16 +186,16 @@ export default function LecturerDashboard() {
             </p>
           </div>
           <div className="text-sm text-gray-400 font-medium">
-             Academic Year 2026
+            Academic Year 2026
           </div>
         </div>
 
         {/* Stats */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Active Notes" value="0" icon={DocumentIcon} color="bg-blue-500 text-blue-500" />
-          <StatCard title="Flashcard Sets" value="0" icon={FlashcardIcon} color="bg-orange-500 text-orange-500" />
-          <StatCard title="Total Quizzes" value="0" icon={QuizIcon} color="bg-green-500 text-green-500" />
-          <StatCard title="Live Rooms" value="0" icon={PresentationIcon} color="bg-purple-500 text-purple-500" />
+          <StatCard title="Active Notes" value={stats.notes} icon={DocumentIcon} color="bg-blue-500" loading={loading} />
+          <StatCard title="Flashcard Sets" value={stats.flashcards} icon={FlashcardIcon} color="bg-orange-500" loading={loading} />
+          <StatCard title="Total Quizzes" value={stats.quizzes} icon={QuizIcon} color="bg-green-500" loading={loading} />
+          <StatCard title="Live Rooms" value={stats.rooms} icon={PresentationIcon} color="bg-purple-500" loading={loading} />
         </section>
 
         {/* Actions */}
@@ -132,48 +206,13 @@ export default function LecturerDashboard() {
           </h2>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ActionCard
-              title="Create Notes"
-              description="Write structured study notes and distribute them to your students."
-              to="/student/notes/create"
-              icon={DocumentIcon}
-            />
-
-            <ActionCard
-              title="Create Flashcards"
-              description="Design active recall decks to help students retain information better."
-              to="/student/flashcards/create"
-              icon={FlashcardIcon}
-            />
-
-            <ActionCard
-              title="Create Quiz"
-              description="Build comprehensive assessments with multiple choice questions."
-              to="/student/quiz/create"
-              icon={QuizIcon}
-            />
-
-            <ActionCard
-              title="Create Quiz Room"
-              description="Launch a live, interactive game lobby for classroom engagement."
-              to="/lecturer/rooms/create"
-              icon={PresentationIcon}
-            />
-
-            <ActionCard
-              title="My Resources"
-              description="View, edit, and manage all your previously uploaded content."
-              to="/lecturer/resources"
-              icon={FolderIcon}
-            />
-
-            <ActionCard
-              title="AI Content Generator"
-              description="Instantly generate quizzes and notes from your raw text using AI."
-              to="/ai/generate"
-              icon={SparklesIcon}
-              special={true}
-            />
+            <ActionCard title="Create Notes" to="../notes/create" description="Write structured study notes." icon={DocumentIcon} />
+            <ActionCard title="Create Flashcards" to="../flashcards/create" description="Design active recall decks." icon={FlashcardIcon} />
+            <ActionCard title="Create Question" to="/lecturer/questions/create" description="Build question bank items." icon={QuizIcon} />
+            <ActionCard title="Create Quiz" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
+            <ActionCard title="Create Quiz Room" to="/lecturer/rooms/create" description="Launch live quiz rooms." icon={PresentationIcon} />
+            <ActionCard title="My Resources" to="/lecturer/resources" description="Manage all your content." icon={FolderIcon} />
+            <ActionCard title="AI Content Generator" to="/ai/generate" description="Generate content using AI." icon={SparklesIcon} special />
           </div>
         </section>
       </div>
