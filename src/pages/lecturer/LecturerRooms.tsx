@@ -103,7 +103,7 @@ export default function LecturerRooms() {
                                     Active
                                 </span>
                                 <Link 
-                                    to={`/leaderboard/${r._id}`} // Assuming you have a route for this
+                                    to={`/lecturer/rooms/${r._id}/leaderboard`} // Assuming you have a route for this
                                     className="text-gray-400 hover:text-indigo-600 transition-colors"
                                     title="View Leaderboard"
                                 >

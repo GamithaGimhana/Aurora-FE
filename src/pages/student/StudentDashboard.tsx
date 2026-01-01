@@ -24,6 +24,11 @@ const QuizIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
+const TicketIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-rose-500">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
+  </svg>
+);
 
 function SkeletonCard() {
   return (
@@ -109,7 +114,7 @@ export default function StudentDashboard() {
           <div className="flex items-center justify-between">
              <h2 className="font-bold text-xl text-gray-900">Recent Notes</h2>
              <Link to="/student/notes" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                View all notes →
+               View all notes →
              </Link>
           </div>
 
@@ -130,9 +135,9 @@ export default function StudentDashboard() {
              <div className="grid gap-4">
                {notes.map((note) => (
                  <Link 
-                    key={note._id} 
-                    to={`/student/notes/${note._id}`}
-                    className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
+                   key={note._id} 
+                   to={`/student/notes/${note._id}`}
+                   className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
                  >
                    <div className="flex items-start gap-4">
                      <div className="p-3 bg-indigo-50 rounded-xl group-hover:bg-indigo-100 transition-colors">
@@ -159,10 +164,33 @@ export default function StudentDashboard() {
         {/* Right Column: Sidebar */}
         <aside className="lg:col-span-4 space-y-6">
 
+          {/* Live Quiz Card (New!) */}
+          <div className="bg-gradient-to-r from-rose-50 to-orange-50 border border-rose-100 rounded-2xl p-6">
+            <h3 className="font-bold text-rose-900 mb-2 flex items-center gap-2">
+                <TicketIcon /> Live Session
+            </h3>
+            <p className="text-sm text-rose-800/80 mb-4 leading-relaxed">
+                Got a game code? Join a live quiz room now.
+            </p>
+            <Link 
+                to="/student/join" 
+                className="block w-full text-center bg-white text-rose-600 border border-rose-200 font-bold py-2.5 rounded-xl hover:bg-rose-50 hover:border-rose-300 transition-colors"
+            >
+                Enter Game PIN
+            </Link>
+          </div>
+
           {/* Quick Actions Grid */}
           <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
             <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
             <div className="grid grid-cols-1 gap-3">
+              <Link to="/student/join" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
+                <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-100 transition-colors">
+                    <TicketIcon />
+                </div>
+                <span className="font-medium text-sm text-gray-700">Join Live Room</span>
+              </Link>
+
               <Link to="/student/notes" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
                 <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
                     <NoteIcon />

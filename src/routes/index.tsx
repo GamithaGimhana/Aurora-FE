@@ -21,6 +21,8 @@ const Quizzes = lazy(() => import("../pages/student/Quizzes"));
 const QuizRoom = lazy(() => import("../pages/student/QuizRoom"));
 const QuizResult = lazy(() => import("../pages/student/QuizResult"));
 const JoinQuizRoom = lazy(() => import("../pages/student/JoinRoom"));
+const Attempt = lazy(() => import("../pages/student/Attempt"));
+const AttemptResult = lazy(() => import("../pages/student/AttemptResult"));
 
 const CreateQuiz = lazy(() => import("../pages/lecturer/CreateQuiz"));
 const CreateQuizRoom = lazy(() => import("../pages/lecturer/CreateQuizRoom"));
@@ -28,6 +30,7 @@ const QuestionBank = lazy(() => import("../pages/lecturer/QuestionBank"));
 const CreateQuestion = lazy(() => import("../pages/lecturer/CreateQuestion"));
 const Questions = lazy(() => import("../pages/lecturer/Questions"));
 const LecturerRooms = lazy(() => import("../pages/lecturer/LecturerRooms"));
+const RoomLeaderboard = lazy(() => import("../pages/lecturer/RoomLeaderboard"));
 
 type RequireAuthProps = {
   children: ReactNode;
@@ -208,7 +211,7 @@ export default function Router() {
 
             {/* Join Quiz Room */}
             <Route
-              path="/student/quiz/join"
+              path="/student/join"
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <JoinQuizRoom />
@@ -222,6 +225,33 @@ export default function Router() {
               element={
                 <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <QuizRoom />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/student/attempt/:attemptId"
+              element={
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <Attempt />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/student/attempt/result/:attemptId"
+              element={
+                <RequireAuth roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <AttemptResult />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/rooms/:roomId/leaderboard"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <RoomLeaderboard />
                 </RequireAuth>
               }
             />

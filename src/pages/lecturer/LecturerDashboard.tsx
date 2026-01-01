@@ -130,6 +130,7 @@ export default function LecturerDashboard() {
     rooms: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [rooms, setRooms] = useState<any[]>([]);
 
   useEffect(() => {
     const loadStats = async () => {
@@ -162,6 +163,10 @@ export default function LecturerDashboard() {
               ? results[3].value.data.data.length
               : 0,
         });
+
+        if (results[3].status === "fulfilled") {
+          setRooms(results[3].value.data.data);
+        }
       } catch (err) {
         console.error("Failed to load dashboard stats", err);
       } finally {
@@ -215,6 +220,44 @@ export default function LecturerDashboard() {
             <ActionCard title="AI Content Generator" to="/ai/generate" description="Generate content using AI." icon={SparklesIcon} special />
           </div>
         </section>
+
+        <section>
+          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <span className="w-1 h-6 bg-indigo-600 rounded-full"></span>
+            My Quiz Rooms
+          </h2>
+
+          {rooms.length === 0 ? (
+            <p className="text-gray-500">No quiz rooms created yet.</p>
+          ) : (
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {rooms.map((room) => (
+                <div
+                  key={room._id}
+                  className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition"
+                >
+                  <h3 className="font-bold text-lg text-gray-900 truncate">
+                    {room.quiz?.title || "Untitled Quiz"}
+                  </h3>
+
+                  <p className="text-sm text-gray-500 mt-1">
+                    Room Code: <span className="font-mono font-semibold">{room.roomCode}</span>
+                  </p>
+
+                  <div className="mt-4 flex gap-3">
+                    <Link
+                      to={`/lecturer/rooms/${room._id}/leaderboard`}
+                      className="flex-1 text-center bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+                    >
+                      Leaderboard
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
       </div>
     </div>
   );
