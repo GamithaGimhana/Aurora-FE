@@ -27,6 +27,7 @@ const CreateQuizRoom = lazy(() => import("../pages/lecturer/CreateQuizRoom"));
 const QuestionBank = lazy(() => import("../pages/lecturer/QuestionBank"));
 const CreateQuestion = lazy(() => import("../pages/lecturer/CreateQuestion"));
 const Questions = lazy(() => import("../pages/lecturer/Questions"));
+const LecturerRooms = lazy(() => import("../pages/lecturer/LecturerRooms"));
 
 type RequireAuthProps = {
   children: ReactNode;
@@ -186,12 +187,21 @@ export default function Router() {
             />
 
             <Route
-              path="/lecturer/question-bank"
+              path="/lecturer/questions/bank"
               element={
                 <RequireAuth roles={["LECTURER", "ADMIN"]}>
                   <QuestionBank selected={[]} setSelected={function (ids: string[]): void {
                     throw new Error("Function not implemented.");
                   } } />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/lecturer/rooms"
+              element={
+                <RequireAuth roles={["LECTURER", "ADMIN"]}>
+                  <LecturerRooms />
                 </RequireAuth>
               }
             />

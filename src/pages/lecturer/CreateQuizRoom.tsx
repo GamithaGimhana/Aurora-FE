@@ -63,9 +63,9 @@ export default function CreateQuizRoom() {
     setLoading(true);
     try {
       const res = await api.post("/rooms/create", {
-        quiz: quizId,
-        timeLimit,
-        maxAttempts,
+        quizId: quizId,
+        timeLimit: Number(timeLimit),
+        maxAttempts: Number(maxAttempts),
       });
       // expecting { data: { room } } or res.data.room
       const room = res.data.data || res.data;

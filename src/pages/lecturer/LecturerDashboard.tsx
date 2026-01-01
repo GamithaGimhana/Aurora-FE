@@ -206,11 +206,11 @@ export default function LecturerDashboard() {
           </h2>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ActionCard title="Create Notes" to="../notes/create" description="Write structured study notes." icon={DocumentIcon} />
-            <ActionCard title="Create Flashcards" to="../flashcards/create" description="Design active recall decks." icon={FlashcardIcon} />
-            <ActionCard title="Create Question" to="/lecturer/questions/create" description="Build question bank items." icon={QuizIcon} />
-            <ActionCard title="Create Quiz" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
-            <ActionCard title="Create Quiz Room" to="/lecturer/rooms/create" description="Launch live quiz rooms." icon={PresentationIcon} />
+            <ActionCard title="Notes" to="../notes" description="Write structured study notes." icon={DocumentIcon} />
+            <ActionCard title="Flashcards" to="../flashcards" description="Design active recall decks." icon={FlashcardIcon} />
+            <ActionCard title="Questions" to="/lecturer/questions/create" description="Build question bank items." icon={QuizIcon} />
+            <ActionCard title="Quizzes" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
+            <ActionCard title="Quiz Rooms" to="/lecturer/rooms/create" description="Launch live quiz rooms." icon={PresentationIcon} />
             <ActionCard title="My Resources" to="/lecturer/resources" description="Manage all your content." icon={FolderIcon} />
             <ActionCard title="AI Content Generator" to="/ai/generate" description="Generate content using AI." icon={SparklesIcon} special />
           </div>

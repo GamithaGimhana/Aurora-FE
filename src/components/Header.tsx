@@ -48,7 +48,7 @@ export default function Header() {
               <NavLink to="/lecturer/dashboard">Dashboard</NavLink>
               <NavLink to="/notes">Notes</NavLink>
               <NavLink to="/flashcards">Flashcards</NavLink>
-              <NavLink to="/student/rooms">Quiz Room</NavLink>
+              <NavLink to="/lecturer/rooms">Quiz Room</NavLink>
             </>
           )}
         </nav>
