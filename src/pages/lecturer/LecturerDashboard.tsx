@@ -132,6 +132,20 @@ export default function LecturerDashboard() {
   const [loading, setLoading] = useState(true);
   const [rooms, setRooms] = useState<any[]>([]);
 
+  // Function to lock/unlock a room
+  const toggleRoom = async (roomId: string) => {
+    try {
+      const res = await api.patch(`/rooms/${roomId}/toggle`);
+      setRooms(prev =>
+        prev.map(r =>
+          r._id === roomId ? { ...r, active: res.data.active } : r
+        )
+      );
+    } catch {
+      alert("Failed to toggle room status");
+    }
+  };
+
   useEffect(() => {
     const loadStats = async () => {
       try {
@@ -139,34 +153,27 @@ export default function LecturerDashboard() {
           api.get("/notes/me"),
           api.get("/flashcards/me"),
           api.get("/quizzes/me"),
-          api.get("/rooms/me"), // can 404 safely now
+          api.get("/rooms/me"),
         ]);
 
+        // Helper to extract data or default to 0/[]
+        const getValue = (result: PromiseSettledResult<any>, fallback: any) => 
+            result.status === 'fulfilled' ? result.value.data.data : fallback;
+
+        const notesData = getValue(results[0], []);
+        const flashcardsData = getValue(results[1], []);
+        const quizzesData = getValue(results[2], []);
+        const roomsData = getValue(results[3], []);
+
         setStats({
-          notes:
-            results[0].status === "fulfilled"
-              ? results[0].value.data.data.length
-              : 0,
-
-          flashcards:
-            results[1].status === "fulfilled"
-              ? results[1].value.data.data.length
-              : 0,
-
-          quizzes:
-            results[2].status === "fulfilled"
-              ? results[2].value.data.data.length
-              : 0,
-
-          rooms:
-            results[3].status === "fulfilled"
-              ? results[3].value.data.data.length
-              : 0,
+          notes: notesData.length,
+          flashcards: flashcardsData.length,
+          quizzes: quizzesData.length,
+          rooms: roomsData.length,
         });
 
-        if (results[3].status === "fulfilled") {
-          setRooms(results[3].value.data.data);
-        }
+        setRooms(roomsData);
+
       } catch (err) {
         console.error("Failed to load dashboard stats", err);
       } finally {
@@ -203,7 +210,7 @@ export default function LecturerDashboard() {
           <StatCard title="Live Rooms" value={stats.rooms} icon={PresentationIcon} color="bg-purple-500" loading={loading} />
         </section>
 
-        {/* Actions */}
+        {/* Actions Grid */}
         <section>
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
             <span className="w-1 h-6 bg-black rounded-full"></span>
@@ -211,45 +218,73 @@ export default function LecturerDashboard() {
           </h2>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ActionCard title="Notes" to="../notes" description="Write structured study notes." icon={DocumentIcon} />
-            <ActionCard title="Flashcards" to="../flashcards" description="Design active recall decks." icon={FlashcardIcon} />
-            <ActionCard title="Questions" to="/lecturer/questions/create" description="Build question bank items." icon={QuizIcon} />
-            <ActionCard title="Quizzes" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
-            <ActionCard title="Quiz Rooms" to="/lecturer/rooms/create" description="Launch live quiz rooms." icon={PresentationIcon} />
-            <ActionCard title="My Resources" to="/lecturer/resources" description="Manage all your content." icon={FolderIcon} />
+            <ActionCard title="Notes" to="/lecturer/notes" description="Write structured study notes." icon={DocumentIcon} />
+            <ActionCard title="Flashcards" to="/lecturer/flashcards" description="Design active recall decks." icon={FlashcardIcon} />
+            <ActionCard title="Question Bank" to="/lecturer/questions" description="Manage your library of questions." icon={QuizIcon} />
+            <ActionCard title="Create Quiz" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
+            <ActionCard title="Launch Live Room" to="/lecturer/rooms/create" description="Start a synchronous quiz session." icon={PresentationIcon} />
             <ActionCard title="AI Content Generator" to="/ai/generate" description="Generate content using AI." icon={SparklesIcon} special />
           </div>
         </section>
 
+        {/* Live Rooms Management */}
         <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <span className="w-1 h-6 bg-indigo-600 rounded-full"></span>
-            My Quiz Rooms
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+             <h2 className="text-xl font-bold flex items-center gap-2">
+                <span className="w-1 h-6 bg-indigo-600 rounded-full"></span>
+                My Quiz Rooms
+             </h2>
+             <Link to="/lecturer/rooms" className="text-sm font-bold text-indigo-600 hover:text-indigo-800">
+                View All →
+             </Link>
+          </div>
 
-          {rooms.length === 0 ? (
-            <p className="text-gray-500">No quiz rooms created yet.</p>
+          {loading ? (
+             <div className="h-40 bg-gray-100 rounded-2xl animate-pulse"></div>
+          ) : rooms.length === 0 ? (
+            <div className="text-center py-12 bg-white border border-dashed border-gray-300 rounded-2xl">
+                <p className="text-gray-500">No active quiz rooms found.</p>
+                <Link to="/lecturer/rooms/create" className="text-indigo-600 font-bold hover:underline mt-2 inline-block">
+                    Create your first room
+                </Link>
+            </div>
           ) : (
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {rooms.map((room) => (
-                <div
-                  key={room._id}
-                  className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition"
-                >
-                  <h3 className="font-bold text-lg text-gray-900 truncate">
-                    {room.quiz?.title || "Untitled Quiz"}
-                  </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {rooms.slice(0, 3).map(room => ( // Show only recent 3
+                <div key={room._id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                        room.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                      }`}>
+                        {room.active ? "ACTIVE" : "LOCKED"}
+                      </span>
+                      <span className="text-xs text-gray-400 font-mono">
+                        {new Date(room.createdAt).toLocaleDateString()}
+                      </span>
+                  </div>
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    Room Code: <span className="font-mono font-semibold">{room.roomCode}</span>
+                  <h3 className="font-bold text-gray-900 truncate mb-1">{room.quiz?.title || "Untitled Quiz"}</h3>
+                  <p className="text-sm text-gray-500 mb-6 font-mono">
+                    Code: <span className="font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded">{room.roomCode}</span>
                   </p>
 
-                  <div className="mt-4 flex gap-3">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => toggleRoom(room._id)}
+                      className={`flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-colors ${
+                        room.active 
+                            ? "bg-white border border-red-200 text-red-600 hover:bg-red-50" 
+                            : "bg-white border border-green-200 text-green-600 hover:bg-green-50"
+                      }`}
+                    >
+                      {room.active ? "Lock" : "Unlock"}
+                    </button>
+
                     <Link
                       to={`/lecturer/rooms/${room._id}/leaderboard`}
-                      className="flex-1 text-center bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+                      className="flex-1 text-center bg-black text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
                     >
-                      Leaderboard
+                      Results
                     </Link>
                   </div>
                 </div>
