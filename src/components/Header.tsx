@@ -66,7 +66,8 @@ export default function Header() {
                 {user?.name ?? "User"}
               </span>
               <span className="text-gray-500 lowercase mt-0.5 leading-none">
-                {user?.role?.[0]}
+                {/* {user?.role?.[0]} */}
+                {user?.role?.join(", ")}
               </span>
             </div>
           </div>

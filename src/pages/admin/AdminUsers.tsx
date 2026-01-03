@@ -63,7 +63,7 @@ export default function AdminUsers() {
 
   const filteredUsers = users.filter(u => 
     u.email.toLowerCase().includes(search.toLowerCase()) || 
-    u.role.toLowerCase().includes(search.toLowerCase())
+    u.role.some((r: string) => r.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
@@ -148,8 +148,8 @@ export default function AdminUsers() {
                                                 value={u.role[0]}
                                                 onChange={(e) => changeRole(u._id, e.target.value)}
                                                 className={`text-xs font-bold uppercase tracking-wide py-1.5 pl-2 pr-8 rounded-lg border-0 ring-1 ring-inset focus:ring-2 focus:ring-indigo-600 bg-transparent cursor-pointer ${
-                                                    u.role === 'ADMIN' ? 'bg-purple-50 text-purple-700 ring-purple-600/20' :
-                                                    u.role === 'LECTURER' ? 'bg-blue-50 text-blue-700 ring-blue-600/20' :
+                                                    u.role.includes("ADMIN") ? 'bg-purple-50 text-purple-700 ring-purple-600/20' :
+                                                    u.role.includes("LECTURER") ? 'bg-blue-50 text-blue-700 ring-blue-600/20' :
                                                     'bg-green-50 text-green-700 ring-green-600/20'
                                                 }`}
                                             >
