@@ -82,11 +82,17 @@ export default function Login() {
           alt="Students collaborating"
         />
         <div className="relative z-20 flex flex-col justify-between p-16 h-full text-white">
-          <div className="font-bold text-2xl tracking-tight flex items-center gap-3">
-            {/* Placeholder Logo */}
-            <div className="w-8 h-8 bg-white rounded-full"></div>
-            Aurora
-          </div>
+          <Link
+            to="/"
+            className="font-bold text-2xl tracking-tight flex items-center gap-3"
+          >
+            <div className="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-gray-800 transition-colors">
+              A
+            </div>
+            <span className="w-8 h-8">
+              Aurora
+            </span>
+          </Link>
           <div>
             <blockquote className="text-2xl font-medium max-w-lg leading-snug">
               "The best way to predict the future is to create it. Start learning smarter today."

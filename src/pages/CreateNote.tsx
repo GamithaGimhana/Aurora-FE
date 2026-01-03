@@ -49,47 +49,6 @@ export default function CreateNote() {
     }
   };
 
-  const generateNoteWithAI = async () => {
-    if (!aiTopic.trim()) {
-      alert("Enter a topic for AI generation");
-      return;
-    }
-
-    try {
-      setAiLoading(true);
-
-      const res = await api.post("/ai/generate/notes", {
-        topic: aiTopic,
-      });
-
-      const aiContent =
-        res.data?.content ||
-        res.data?.data?.content ||
-        res.data?.text;
-
-      if (!aiContent) {
-        throw new Error("Invalid AI response");
-      }
-
-      // Auto-fill existing form fields
-      setTitle(aiTopic);
-      setContent(aiContent);
-    }catch (err: any) {
-      const status = err?.response?.status;
-      const message = err?.response?.data?.message;
-
-      if (status === 429) {
-        alert("AI is busy right now. Please wait a minute and try again.");
-      } else {
-        alert(message || "AI note generation failed");
-      }
-
-      console.error("AI error:", err);
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 py-12 px-6">
       <div className="max-w-4xl mx-auto">
@@ -128,30 +87,6 @@ export default function CreateNote() {
                         </>
                     )}
                 </button>
-            </div>
-
-            {/* ---------- AI NOTE GENERATION ---------- */}
-            <div className="mb-6 border border-purple-300 p-4 rounded">
-              <h2 className="font-semibold text-purple-700 mb-2">
-                Generate Note with AI
-              </h2>
-
-              <input
-                type="text"
-                placeholder="Enter topic (e.g. Operating Systems – Deadlocks)"
-                className="w-full border p-2 mb-2"
-                value={aiTopic}
-                onChange={(e) => setAiTopic(e.target.value)}
-              />
-
-              <button
-                type="button"
-                onClick={generateNoteWithAI}
-                disabled={aiLoading}
-                className="bg-purple-600 text-white px-4 py-2 rounded"
-              >
-                {aiLoading ? "Generating..." : "Generate"}
-              </button>
             </div>
 
             {/* Inputs Area */}

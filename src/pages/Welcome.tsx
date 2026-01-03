@@ -147,7 +147,9 @@ export default function Welcome() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="font-bold text-xl tracking-tight flex items-center gap-2">
                 {/* Simple Logo Placeholder */}
-                <div className="w-6 h-6 bg-black rounded-full"></div>
+                <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-gray-800 transition-colors">
+                  A
+                </div>
                 Aurora
             </div>
             <div className="flex gap-4 text-sm font-medium">
