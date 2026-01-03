@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { login, getMe } from "../services/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/authContext";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { loginThunk } from "../store/auth/authThunks";
 
 // --- Icons for input fields ---
 const MailIcon = () => (
@@ -33,13 +33,13 @@ const LockClosedIcon = () => (
 );
 
 export default function Login() {
-  // ================= KEEPING ORIGINAL LOGIC INTACT =================
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.auth);
+
 
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("Admin@123");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleLogin = async (e: FormEvent) => {
@@ -51,30 +51,14 @@ export default function Login() {
       return;
     }
 
-    setLoading(true);
-
     try {
-      const res = await login(email, password);
+      const result = await dispatch(
+        loginThunk({ email, password })
+      ).unwrap();
 
-      if (!res?.accessToken) {
-        setError("Login failed: No token received");
-        return;
-      }
+      const roles = result.role;
 
-      localStorage.setItem("accessToken", res.accessToken);
-      localStorage.setItem("refreshToken", res.refreshToken);
-
-      const profile = await getMe();
-      if (!profile?.user) {
-        setError("Failed to fetch user profile");
-        return;
-      }
-
-      setUser(profile.user);
-      localStorage.setItem("user", JSON.stringify(profile.user));
-
-      const roles = profile.user.role || [];
-      if (roles.includes("ADMIN")){
+      if (roles.includes("ADMIN")) {
         navigate("/admin/dashboard");
       } else if (roles.includes("LECTURER")) {
         navigate("/lecturer/dashboard");
@@ -82,15 +66,7 @@ export default function Login() {
         navigate("/student/dashboard");
       }
     } catch (err: any) {
-      // If your backend sends proper status & message
-      if (err.response?.data?.message) {
-        setError(err.response.data.message);
-      } else {
-        setError("Login failed due to server error");
-      }
-      console.error("Login error:", err);
-    } finally {
-      setLoading(false);
+      setError(err || "Login failed");
     }
   };
   // ================= END ORIGINAL LOGIC =================

@@ -1,14 +1,14 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../contexts/authContext";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { logout } from "../store/auth/authSlice";
 
 export default function Header() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
 
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
+  const handleLogout = () => {
+    dispatch(logout());
     navigate("/login");
   };
 
@@ -76,7 +76,7 @@ export default function Header() {
 
           {/* Logout */}
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="text-sm font-medium text-gray-500 hover:text-red-600 transition-colors px-2"
           >
             Sign out
