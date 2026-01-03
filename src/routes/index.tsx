@@ -1,7 +1,7 @@
-import { lazy, Suspense, type ReactNode } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useAuth } from "../contexts/authContext";
+import { lazy, Suspense } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "../components/Layout";
+import ProtectedRoute from "./ProtectedRoute";
 
 /* ------------------- Lazy-loaded Pages ------------------- */
 // Public
@@ -9,8 +9,12 @@ const Welcome = lazy(() => import("../pages/Welcome"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
 
+// Admin
+const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
+const AdminUsers = lazy(() => import("../pages/admin/AdminUsers"));
+
 // Student
-const StudentDashboard = lazy(() => import('../pages/student/StudentDashboard'));
+const StudentDashboard = lazy(() => import("../pages/student/StudentDashboard"));
 const Quizzes = lazy(() => import("../pages/student/Quizzes"));
 const QuizRoom = lazy(() => import("../pages/student/QuizRoom"));
 const JoinQuizRoom = lazy(() => import("../pages/student/JoinRoom"));
@@ -35,35 +39,6 @@ const Flashcards = lazy(() => import("../pages/Flashcards"));
 const CreateFlashcard = lazy(() => import("../pages/CreateFlashcard"));
 const FlashcardStudy = lazy(() => import("../pages/FlashcardStudy"));
 
-/* ------------------- Auth Wrapper ------------------- */
-type RequireAuthProps = {
-  children: ReactNode;
-  roles?: string[];
-};
-
-const RequireAuth = ({ children, roles }: RequireAuthProps) => {
-  const { user, loading } = useAuth();
-
-  if (loading) return <div>User loading...</div>;
-  if (!user) return <Navigate to="/login" replace />;
-  if (roles && !roles.some(role => user.role?.includes(role))) {
-    return (
-      <div className="p-6 text-center">
-        <h2 className="text-xl font-bold">Access Denied</h2>
-        <p>You do not have permission to view this page.</p>
-      </div>
-    );
-  }
-
-  return <>{children}</>;
-};
-
-/* ------------------- Helper ------------------- */
-const PrivateRoute = ({ roles, children }: { roles?: string[], children: ReactNode }) => (
-  <RequireAuth roles={roles}>{children}</RequireAuth>
-);
-
-/* ------------------- Router ------------------- */
 export default function Router() {
   return (
     <BrowserRouter>
@@ -75,34 +50,210 @@ export default function Router() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* ------------------- Private Routes with Layout ------------------- */}
+          {/* ------------------- Protected Routes ------------------- */}
           <Route element={<Layout />}>
 
-            {/* Student */}
-            <Route path="/student/dashboard" element={<PrivateRoute roles={["STUDENT", "ADMIN"]}><StudentDashboard /></PrivateRoute>} />
-            <Route path="/student/quizzes" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><Quizzes /></PrivateRoute>} />
-            <Route path="/student/join" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><JoinQuizRoom /></PrivateRoute>} />
-            <Route path="/student/rooms/:roomId" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><QuizRoom /></PrivateRoute>} />
-            <Route path="/student/attempt/:attemptId" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><Attempt /></PrivateRoute>} />
-            <Route path="/student/attempt/result/:attemptId" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><AttemptResult /></PrivateRoute>} />
+            {/* Admin */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute roles={["ADMIN"]}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute roles={["ADMIN"]}>
+                  <AdminUsers />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Student (Lecturer + Admin allowed) */}
+            <Route
+              path="/student/dashboard"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/quizzes"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <Quizzes />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/join"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <JoinQuizRoom />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/rooms/:roomId"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <QuizRoom />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/attempt/:attemptId"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <Attempt />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/attempt/result/:attemptId"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <AttemptResult />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Lecturer */}
-            <Route path="/lecturer/dashboard" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><LecturerDashboard /></PrivateRoute>} />
-            <Route path="/lecturer/quizzes/create" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><CreateQuiz /></PrivateRoute>} />
-            <Route path="/lecturer/rooms/create" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><CreateQuizRoom /></PrivateRoute>} />
-            <Route path="/lecturer/questions" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><Questions /></PrivateRoute>} />
-            <Route path="/lecturer/questions/create" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><CreateQuestion /></PrivateRoute>} />
-            <Route path="/lecturer/questions/bank" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><QuestionBank selected={[]} setSelected={() => {}} /></PrivateRoute>} />
-            <Route path="/lecturer/rooms" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><LecturerRooms /></PrivateRoute>} />
-            <Route path="/lecturer/rooms/:roomId/leaderboard" element={<PrivateRoute roles={["LECTURER", "ADMIN"]}><RoomLeaderboard /></PrivateRoute>} />
+            <Route
+              path="/lecturer/dashboard"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <LecturerDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Notes & Flashcards */}
-            <Route path="/notes" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><Notes /></PrivateRoute>} />
-            <Route path="/notes/:id" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><ViewNote /></PrivateRoute>} />
-            <Route path="/notes/create" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><CreateNote /></PrivateRoute>} />
-            <Route path="/flashcards" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><Flashcards /></PrivateRoute>} />
-            <Route path="/flashcards/create" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><CreateFlashcard /></PrivateRoute>} />
-            <Route path="/flashcards/study" element={<PrivateRoute roles={["STUDENT", "LECTURER", "ADMIN"]}><FlashcardStudy /></PrivateRoute>} />
+            <Route
+              path="/lecturer/quizzes/create"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <CreateQuiz />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/lecturer/rooms/create"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <CreateQuizRoom />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/lecturer/questions"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <Questions />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/lecturer/questions/create"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <CreateQuestion />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/lecturer/questions/bank"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <QuestionBank selected={[]} setSelected={() => {}} />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/lecturer/rooms"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <LecturerRooms />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/lecturer/rooms/:roomId/leaderboard"
+              element={
+                <ProtectedRoute roles={["LECTURER", "ADMIN"]}>
+                  <RoomLeaderboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Notes & Flashcards (All logged-in users) */}
+            <Route
+              path="/notes"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <Notes />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/notes/create"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <CreateNote />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/notes/:id"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <ViewNote />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/flashcards"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <Flashcards />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/flashcards/create"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <CreateFlashcard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/flashcards/study"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <FlashcardStudy />
+                </ProtectedRoute>
+              }
+            />
 
           </Route>
         </Routes>

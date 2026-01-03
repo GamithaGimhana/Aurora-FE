@@ -74,7 +74,9 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(profile.user));
 
       const roles = profile.user.role || [];
-      if (roles.includes("ADMIN") || roles.includes("LECTURER")) {
+      if (roles.includes("ADMIN")){
+        navigate("/admin/dashboard");
+      } else if (roles.includes("LECTURER")) {
         navigate("/lecturer/dashboard");
       } else {
         navigate("/student/dashboard");

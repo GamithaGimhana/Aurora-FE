@@ -218,8 +218,8 @@ export default function LecturerDashboard() {
           </h2>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ActionCard title="Notes" to="/lecturer/notes" description="Write structured study notes." icon={DocumentIcon} />
-            <ActionCard title="Flashcards" to="/lecturer/flashcards" description="Design active recall decks." icon={FlashcardIcon} />
+            <ActionCard title="Notes" to="/notes" description="Write structured study notes." icon={DocumentIcon} />
+            <ActionCard title="Flashcards" to="/flashcards" description="Design active recall decks." icon={FlashcardIcon} />
             <ActionCard title="Question Bank" to="/lecturer/questions" description="Manage your library of questions." icon={QuizIcon} />
             <ActionCard title="Create Quiz" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
             <ActionCard title="Launch Live Room" to="/lecturer/rooms/create" description="Start a synchronous quiz session." icon={PresentationIcon} />
