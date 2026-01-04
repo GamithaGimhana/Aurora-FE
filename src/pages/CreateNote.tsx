@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { createNote } from "../services/notes";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../services/api";
 
 // --- Icons ---
 const ArrowLeftIcon = () => (
@@ -22,8 +21,6 @@ export default function CreateNote() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [aiTopic, setAiTopic] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
 
   const handleCreate = async (e: any) => {
     e.preventDefault();

@@ -44,10 +44,10 @@ export default function AdminUsers() {
   const changeRole = async (id: string, role: string) => {
     try {
         setUsers(users.map(u => u._id === id ? { ...u, role: [role] } : u));
-        await api.patch(`/admin/users/${id}/role`, { role }); // send string
+        await api.patch(`/admin/users/${id}/role`, { role }); 
     } catch {
         alert("Failed to update role");
-        loadUsers(); // revert on fail
+        loadUsers(); 
     }
   }; 
 
@@ -127,8 +127,9 @@ export default function AdminUsers() {
                             </tr>
                         ) : (
                             filteredUsers.map((u) => {
-                                // Initials for Avatar
                                 const initial = u.email[0].toUpperCase();
+                                // CHECK IF USER IS ADMIN
+                                const isAdmin = u.role.includes("ADMIN");
                                 
                                 return (
                                     <tr key={u._id} className="hover:bg-gray-50 transition-colors group">
@@ -147,25 +148,34 @@ export default function AdminUsers() {
                                             <select
                                                 value={u.role[0]}
                                                 onChange={(e) => changeRole(u._id, e.target.value)}
+                                                // CONSTRAINT 2: Disable select if user is Admin
+                                                disabled={isAdmin}
                                                 className={`text-xs font-bold uppercase tracking-wide py-1.5 pl-2 pr-8 rounded-lg border-0 ring-1 ring-inset focus:ring-2 focus:ring-indigo-600 bg-transparent cursor-pointer ${
-                                                    u.role.includes("ADMIN") ? 'bg-purple-50 text-purple-700 ring-purple-600/20' :
-                                                    u.role.includes("LECTURER") ? 'bg-blue-50 text-blue-700 ring-blue-600/20' :
-                                                    'bg-green-50 text-green-700 ring-green-600/20'
+                                                    isAdmin 
+                                                    ? 'bg-purple-50 text-purple-700 ring-purple-600/20 opacity-70 cursor-not-allowed' // Styling for disabled admin
+                                                    : u.role.includes("LECTURER") ? 'bg-blue-50 text-blue-700 ring-blue-600/20' 
+                                                    : 'bg-green-50 text-green-700 ring-green-600/20'
                                                 }`}
                                             >
                                                 <option value="STUDENT">STUDENT</option>
                                                 <option value="LECTURER">LECTURER</option>
-                                                <option value="ADMIN">ADMIN</option>
+                                                
+                                                {/* CONSTRAINT 3: Only show 'ADMIN' option if they are already an Admin 
+                                                    (so normal users can't be promoted to Admin) */}
+                                                {isAdmin && <option value="ADMIN">ADMIN</option>}
                                             </select>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button
-                                                onClick={() => deleteUser(u._id)}
-                                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
-                                                title="Delete User"
-                                            >
-                                                <TrashIcon />
-                                            </button>
+                                            {/* CONSTRAINT 1: Hide delete button if user is Admin */}
+                                            {!isAdmin && (
+                                                <button
+                                                    onClick={() => deleteUser(u._id)}
+                                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                                                    title="Delete User"
+                                                >
+                                                    <TrashIcon />
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 );
@@ -175,7 +185,6 @@ export default function AdminUsers() {
                 </table>
             </div>
             
-            {/* Footer Count */}
             {!loading && (
                 <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 text-xs text-gray-500">
                     Showing {filteredUsers.length} of {users.length} users

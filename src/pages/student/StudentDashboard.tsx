@@ -54,7 +54,7 @@ function EmptyState() {
         Your dashboard is looking a bit empty. Create your first note to start building your knowledge base.
       </p>
       <Link
-        to="/student/notes"
+        to="/notes"
         className="inline-flex items-center gap-2 mt-6 px-6 py-2.5 bg-black text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-200"
       >
         <PlusIcon /> Create Note
@@ -95,13 +95,7 @@ export default function StudentDashboard() {
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900">Study Dashboard</h1>
                     <p className="text-gray-500 mt-2">Welcome back. Ready to learn something new today?</p>
                 </div>
-                
-                <Link
-                    to="/student/quiz-generator"
-                    className="inline-flex items-center justify-center gap-2 bg-black text-white px-5 py-3 rounded-xl text-sm font-medium hover:bg-gray-800 transition shadow-lg shadow-gray-200"
-                >
-                    <PlusIcon /> New Study Material
-                </Link>
+
             </div>
         </div>
       </header>
@@ -113,7 +107,7 @@ export default function StudentDashboard() {
         <section className="lg:col-span-8 space-y-6">
           <div className="flex items-center justify-between">
              <h2 className="font-bold text-xl text-gray-900">Recent Notes</h2>
-             <Link to="/student/notes" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
+             <Link to="/notes" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
                View all notes →
              </Link>
           </div>
@@ -136,7 +130,7 @@ export default function StudentDashboard() {
                {notes.map((note) => (
                  <Link 
                    key={note._id} 
-                   to={`/student/notes/${note._id}`}
+                   to={`/notes/${note._id}`}
                    className="group block bg-white border border-gray-200 rounded-2xl p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200"
                  >
                    <div className="flex items-start gap-4">
@@ -191,21 +185,21 @@ export default function StudentDashboard() {
                 <span className="font-medium text-sm text-gray-700">Join Live Room</span>
               </Link>
 
-              <Link to="/student/notes" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
+              <Link to="/notes" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
                 <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
                     <NoteIcon />
                 </div>
                 <span className="font-medium text-sm text-gray-700">Write a Note</span>
               </Link>
               
-              <Link to="/student/flashcards" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
+              <Link to="/flashcards" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
                 <div className="w-10 h-10 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center group-hover:bg-orange-100 transition-colors">
                     <FlashcardIcon />
                 </div>
                 <span className="font-medium text-sm text-gray-700">Create Flashcards</span>
               </Link>
 
-              <Link to="/student/quizzes" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
+              <Link to="/student/rooms/available" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group">
                 <div className="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center group-hover:bg-green-100 transition-colors">
                     <QuizIcon />
                 </div>

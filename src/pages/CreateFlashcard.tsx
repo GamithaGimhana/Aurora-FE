@@ -51,6 +51,10 @@ export default function FlashcardsCreate() {
     setLoading(true);
     try {
       const res = await createFlashcard({ front, back, topic });
+
+      if (res?.message) {
+        console.log(res.message);
+      }
       // success — backend response available in res
       // alert(res.message || "Flashcard created!"); // Optional: Remove alert for smoother flow
       navigate("/student/flashcards");
@@ -78,7 +82,7 @@ export default function FlashcardsCreate() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center gap-4">
             <Link 
-                to="/student/flashcards"
+                to="/flashcards"
                 className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
             >
                 <ChevronLeft />

@@ -83,7 +83,7 @@ export default function Router() {
             />
 
             <Route
-              path="/student/quizzes"
+              path="/student/rooms/available"
               element={
                 <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <Quizzes />
