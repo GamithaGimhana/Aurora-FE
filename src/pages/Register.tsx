@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { register } from "../services/auth";
 import { Link, useNavigate } from "react-router-dom";
+import type { Role } from "../store/auth/authTypes"; // adjust path
 
 // --- Icons ---
 const UserIcon = () => (
@@ -34,7 +35,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [role, setRole] = useState("STUDENT");
+  const [role, setRole] = useState<Role>("STUDENT");
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
@@ -171,7 +172,7 @@ export default function Register() {
                     <select
                         className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none appearance-none cursor-pointer"
                         value={role}
-                        onChange={(e) => setRole(e.target.value)}
+                        onChange={(e) => setRole(e.target.value as Role)}
                     >
                         <option value="STUDENT">Student</option>
                         <option value="LECTURER">Lecturer</option>
