@@ -1,6 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import api from "../../services/api";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+  fetchAdminUsersThunk,
+  updateUserRoleThunk,
+  deleteUserThunk,
+} from "../../store/adminUsers/adminUsersThunks";
+import type { Role } from "../../store/auth/authTypes";
 
 // --- Icons ---
 const TrashIcon = () => (
@@ -21,152 +27,230 @@ const ChevronLeft = () => (
   </svg>
 );
 
-export default function AdminUsers() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+const UsersIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-indigo-600">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+    </svg>
+);
 
-  const loadUsers = async () => {
-    try {
-      const res = await api.get("/admin/users");
-      setUsers(res.data.users);
-    } catch (err) {
-      console.error("Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  };
+const ShieldCheckIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-purple-600">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+    </svg>
+);
+
+const AcademicCapIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-600">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.221 69.17 69.17 0 00-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5z" />
+    </svg>
+);
+
+// --- Component ---
+
+export default function AdminUsers() {
+  const dispatch = useAppDispatch();
+  const { users, loading } = useAppSelector((state) => state.adminUsers);
+  
+  const [search, setSearch] = useState("");
+  const [filterRole, setFilterRole] = useState<"ALL" | "STUDENT" | "LECTURER" | "ADMIN">("ALL");
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    dispatch(fetchAdminUsersThunk());
+  }, [dispatch]);
 
-  const changeRole = async (id: string, role: string) => {
-    try {
-        setUsers(users.map(u => u._id === id ? { ...u, role: [role] } : u));
-        await api.patch(`/admin/users/${id}/role`, { role }); 
-    } catch {
-        alert("Failed to update role");
-        loadUsers(); 
-    }
-  }; 
-
-  const deleteUser = async (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this user?")) return;
-    try {
-        await api.delete(`/admin/users/${id}`);
-        setUsers(users.filter(u => u._id !== id));
-    } catch {
-        alert("Failed to delete user");
-    }
+  const changeRole = (id: string, role: Role) => {
+    // Optimistic UI could be implemented here, but standard dispatch for now
+    dispatch(updateUserRoleThunk({ userId: id, role: [role] }));
   };
 
-  const filteredUsers = users.filter(u => 
-    u.email.toLowerCase().includes(search.toLowerCase()) || 
-    u.role.some((r: string) => r.toLowerCase().includes(search.toLowerCase()))
-  );
+  const deleteUser = (id: string) => {
+    if (!confirm("Are you sure you want to permanently delete this user?")) return;
+    dispatch(deleteUserThunk(id));
+  };
+
+  // Stats Calculation
+  const stats = useMemo(() => {
+    return {
+        total: users.length,
+        admins: users.filter(u => u.role.includes("ADMIN")).length,
+        lecturers: users.filter(u => u.role.includes("LECTURER")).length,
+        students: users.filter(u => u.role.includes("STUDENT")).length,
+    };
+  }, [users]);
+
+  // Filtering Logic
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = u.email.toLowerCase().includes(search.toLowerCase()) ||
+                          u.role.some(r => r.toLowerCase().includes(search.toLowerCase()));
+    const matchesRole = filterRole === "ALL" || u.role.includes(filterRole);
+    return matchesSearch && matchesRole;
+  });
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900 p-6 md:p-10">
+      <div className="max-w-7xl mx-auto space-y-8">
         
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-                <Link 
-                    to="/admin/dashboard"
-                    className="p-2 -ml-2 hover:bg-gray-200 rounded-full transition-colors text-gray-500"
-                >
-                    <ChevronLeft />
-                </Link>
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-                    <p className="text-gray-500 text-sm">Manage access and roles for the platform.</p>
-                </div>
-            </div>
-            
-            <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <SearchIcon />
-                </div>
-                <input 
-                    type="text" 
-                    placeholder="Search users..." 
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none w-full md:w-64"
-                />
+        {/* Header Section */}
+        <div className="flex items-center gap-4">
+            <Link 
+                to="/admin/dashboard"
+                className="p-2 -ml-2 hover:bg-white bg-white/50 border border-transparent hover:border-gray-200 rounded-full transition-all text-gray-500 shadow-sm"
+            >
+                <ChevronLeft />
+            </Link>
+            <div>
+                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">User Management</h1>
+                <p className="text-gray-500 text-sm mt-1">Oversee platform users, manage permissions, and track engagement.</p>
             </div>
         </div>
 
-        {/* Table Card */}
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-indigo-50 rounded-xl"><UsersIcon /></div>
+                <div>
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Total Users</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                </div>
+            </div>
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-blue-50 rounded-xl"><AcademicCapIcon /></div>
+                <div>
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Lecturers</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.lecturers}</p>
+                </div>
+            </div>
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+                <div className="p-3 bg-purple-50 rounded-xl"><ShieldCheckIcon /></div>
+                <div>
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Admins</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.admins}</p>
+                </div>
+            </div>
+        </div>
+
+        {/* Main Content Card */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            
+            {/* Toolbar: Search & Filter Tabs */}
+            <div className="p-5 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50/30">
+                {/* Tabs */}
+                <div className="flex p-1 bg-gray-100/80 rounded-xl gap-1 overflow-x-auto">
+                    {(["ALL", "LECTURER", "STUDENT", "ADMIN"] as const).map((role) => (
+                        <button
+                            key={role}
+                            onClick={() => setFilterRole(role)}
+                            className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all capitalize ${
+                                filterRole === role 
+                                ? "bg-white text-black shadow-sm" 
+                                : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+                            }`}
+                        >
+                            {role.toLowerCase()}s
+                        </button>
+                    ))}
+                </div>
+
+                {/* Search */}
+                <div className="relative w-full md:w-72">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <SearchIcon />
+                    </div>
+                    <input 
+                        type="text" 
+                        placeholder="Search by email..." 
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm transition-shadow"
+                    />
+                </div>
+            </div>
+
+            {/* Table */}
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="bg-gray-50/50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
-                            <th className="px-6 py-4">User</th>
-                            <th className="px-6 py-4">Role</th>
+                        <tr className="bg-gray-50/50 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-400 font-semibold">
+                            <th className="px-6 py-4">User Identity</th>
+                            <th className="px-6 py-4">Access Level</th>
+                            <th className="px-6 py-4">Created</th>
                             <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {loading ? (
-                            [1, 2, 3].map(i => (
+                            [1, 2, 3, 4].map(i => (
                                 <tr key={i}>
-                                    <td className="px-6 py-4"><div className="h-4 bg-gray-100 rounded w-48 animate-pulse"></div></td>
+                                    <td className="px-6 py-4"><div className="flex gap-3"><div className="h-10 w-10 bg-gray-100 rounded-full animate-pulse"></div><div className="space-y-2"><div className="h-4 bg-gray-100 rounded w-32 animate-pulse"></div><div className="h-3 bg-gray-100 rounded w-20 animate-pulse"></div></div></div></td>
+                                    <td className="px-6 py-4"><div className="h-6 bg-gray-100 rounded w-24 animate-pulse"></div></td>
                                     <td className="px-6 py-4"><div className="h-4 bg-gray-100 rounded w-24 animate-pulse"></div></td>
                                     <td className="px-6 py-4"></td>
                                 </tr>
                             ))
                         ) : filteredUsers.length === 0 ? (
                             <tr>
-                                <td colSpan={3} className="px-6 py-12 text-center text-gray-500">
-                                    No users found matching "{search}"
+                                <td colSpan={4} className="px-6 py-16 text-center">
+                                    <div className="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3 text-2xl">
+                                        🔍
+                                    </div>
+                                    <p className="text-gray-900 font-medium">No users found</p>
+                                    <p className="text-gray-500 text-sm mt-1">Try adjusting your filters or search terms.</p>
                                 </td>
                             </tr>
                         ) : (
                             filteredUsers.map((u) => {
                                 const initial = u.email[0].toUpperCase();
-                                // CHECK IF USER IS ADMIN
                                 const isAdmin = u.role.includes("ADMIN");
+                                const isLecturer = u.role.includes("LECTURER");
                                 
+                                // Dynamic background for avatars based on email length (pseudo-random)
+                                const colors = ["bg-red-100 text-red-600", "bg-blue-100 text-blue-600", "bg-green-100 text-green-600", "bg-yellow-100 text-yellow-600", "bg-purple-100 text-purple-600", "bg-pink-100 text-pink-600"];
+                                const avatarColor = colors[u.email.length % colors.length];
+
                                 return (
-                                    <tr key={u._id} className="hover:bg-gray-50 transition-colors group">
+                                    <tr key={u._id} className="hover:bg-gray-50/80 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold border border-slate-200">
+                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border border-black/5 shadow-sm ${avatarColor}`}>
                                                     {initial}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-900">{u.email}</p>
-                                                    <p className="text-xs text-gray-400">ID: {u._id.slice(-6)}</p>
+                                                    <p className="font-semibold text-gray-900 text-sm">{u.email}</p>
+                                                    <p className="text-xs text-gray-400 font-mono mt-0.5">ID: {u._id.slice(-6).toUpperCase()}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <select
-                                                value={u.role[0]}
-                                                onChange={(e) => changeRole(u._id, e.target.value)}
-                                                // CONSTRAINT 2: Disable select if user is Admin
-                                                disabled={isAdmin}
-                                                className={`text-xs font-bold uppercase tracking-wide py-1.5 pl-2 pr-8 rounded-lg border-0 ring-1 ring-inset focus:ring-2 focus:ring-indigo-600 bg-transparent cursor-pointer ${
-                                                    isAdmin 
-                                                    ? 'bg-purple-50 text-purple-700 ring-purple-600/20 opacity-70 cursor-not-allowed' // Styling for disabled admin
-                                                    : u.role.includes("LECTURER") ? 'bg-blue-50 text-blue-700 ring-blue-600/20' 
-                                                    : 'bg-green-50 text-green-700 ring-green-600/20'
-                                                }`}
-                                            >
-                                                <option value="STUDENT">STUDENT</option>
-                                                <option value="LECTURER">LECTURER</option>
-                                                
-                                                {/* CONSTRAINT 3: Only show 'ADMIN' option if they are already an Admin 
-                                                    (so normal users can't be promoted to Admin) */}
-                                                {isAdmin && <option value="ADMIN">ADMIN</option>}
-                                            </select>
+                                            <div className="relative inline-block">
+                                                <select
+                                                    value={u.role[0]}
+                                                    onChange={(e) => changeRole(u._id, e.target.value as Role)}
+                                                    disabled={isAdmin}
+                                                    className={`appearance-none pl-3 pr-8 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all border-0 shadow-sm ${
+                                                        isAdmin 
+                                                        ? 'bg-purple-100 text-purple-700 ring-1 ring-purple-200 cursor-not-allowed opacity-80' 
+                                                        : isLecturer 
+                                                        ? 'bg-blue-100 text-blue-700 ring-1 ring-blue-200 hover:bg-blue-200 focus:ring-blue-500' 
+                                                        : 'bg-green-100 text-green-700 ring-1 ring-green-200 hover:bg-green-200 focus:ring-green-500'
+                                                    }`}
+                                                >
+                                                    <option value="STUDENT">Student</option>
+                                                    <option value="LECTURER">Lecturer</option>
+                                                    {isAdmin && <option value="ADMIN">Admin</option>}
+                                                </select>
+                                                {/* Custom Arrow for select */}
+                                                {!isAdmin && (
+                                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                        <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            {/* Assuming createdAt exists, otherwise placeholder */}
+                                            {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "Unknown"}
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            {/* CONSTRAINT 1: Hide delete button if user is Admin */}
                                             {!isAdmin && (
                                                 <button
                                                     onClick={() => deleteUser(u._id)}
@@ -184,12 +268,12 @@ export default function AdminUsers() {
                     </tbody>
                 </table>
             </div>
-            
-            {!loading && (
-                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 text-xs text-gray-500">
-                    Showing {filteredUsers.length} of {users.length} users
-                </div>
-            )}
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-between items-center text-xs text-gray-500">
+                <span>Showing {filteredUsers.length} results</span>
+                <span>Total Database: {users.length} users</span>
+            </div>
         </div>
       </div>
     </div>

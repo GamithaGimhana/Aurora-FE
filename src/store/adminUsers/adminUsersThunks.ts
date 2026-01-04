@@ -28,3 +28,16 @@ export const updateUserRoleThunk = createAsyncThunk<
     return rejectWithValue("Failed to update role");
   }
 });
+
+export const deleteUserThunk = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("adminUsers/deleteUser", async (userId, { rejectWithValue }) => {
+  try {
+    await api.delete(`/admin/users/${userId}`);
+    return userId;
+  } catch {
+    return rejectWithValue("Failed to delete user");
+  }
+});
