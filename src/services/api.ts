@@ -4,6 +4,7 @@ import { refreshTokens } from "./auth";
 const api = axios.create({
   // baseURL: "http://localhost:5000/api/v1",
   baseURL:  "https://aurora-be.vercel.app/api/v1",
+  withCredentials: true,
 });
 
 const PUBLIC_ENDPOINTS = [
