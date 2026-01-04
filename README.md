@@ -633,7 +633,7 @@ Contributions are always welcome! We appreciate your interest in improving Auror
 1. **Fork the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/aurora-fe.git
+   git clone https://github.com/GamithaGimhana/Aurora-FE.git
    ```
 
 2. **Create a Feature Branch**
@@ -722,10 +722,7 @@ This project is **private and proprietary**. All rights reserved.
 
 ### Development Team
 
-- **Project Lead**: [Your Name]
-- **Frontend Developers**: [Team Members]
-- **Backend Integration**: [Team Members]
-- **UI/UX Design**: [Team Members]
+- **Developed by**: Gamitha Gimhana
 
 ### Acknowledgments
 
@@ -739,9 +736,9 @@ This project is **private and proprietary**. All rights reserved.
 
 Need help or have questions? We're here to assist!
 
-- **📧 Email**: support@aurora-lms.edu (if applicable)
-- **🐛 Report Issues**: [GitHub Issues](https://github.com/yourusername/aurora-fe/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/yourusername/aurora-fe/discussions)
+- **📧 Email**: gamitha.gimhana99@gmail.com
+- **🐛 Report Issues**: [GitHub Issues](https://github.com/GamithaGimhana/Aurora-FE/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/GamithaGimhana/Aurora-FE/discussions)
 - **📚 Documentation**: Check this README and code comments
 
 ### Troubleshooting
