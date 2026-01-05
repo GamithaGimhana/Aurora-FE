@@ -56,7 +56,7 @@ export default function FlashcardsCreate() {
         console.log(res.message);
       }
       // success — backend response available in res
-      navigate("/student/flashcards");
+      navigate("/flashcards");
     } catch (err: any) {
       // show better error info
       console.error("Create flashcard error:", err);
