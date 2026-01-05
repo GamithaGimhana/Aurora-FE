@@ -157,14 +157,11 @@ The platform emphasizes real-time interaction, intelligent learning tools, and s
 
    ```env
    PORT=5000
-   NODE_ENV=development
    MONGODB_URI=mongodb://localhost:27017/aurora
    JWT_SECRET=your-secret-key-here
    JWT_EXPIRE=7d
    CORS_ORIGIN=http://localhost:5173
    ```
-
-   > For MongoDB Atlas: `mongodb+srv://username:password@cluster.mongodb.net/aurora`
 
 4. **Start the Backend Server**
 
