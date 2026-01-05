@@ -4,27 +4,29 @@ import { logout } from "../store/auth/authSlice";
 
 export default function Header() {
   const navigate = useNavigate();
-  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
+
+  const user = useAppSelector((state) => state.auth.user);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
   };
 
-  // Generate initials for the avatar (e.g., "John Doe" -> "J")
+  // Safely check roles (role is Role[])
+  const isStudent = user?.role?.includes("STUDENT");
+  const isLecturer = user?.role?.includes("LECTURER");
+  const isAdmin = user?.role?.includes("ADMIN");
+
   const initial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 transition-all">
+    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        
+
         {/* Left: Brand */}
-        <Link
-          to="/"
-          className="flex items-center gap-2 group"
-        >
-          <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm group-hover:bg-gray-800 transition-colors">
+        <Link to="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold text-sm">
             A
           </div>
           <span className="text-lg font-bold tracking-tight text-gray-900">
@@ -34,7 +36,7 @@ export default function Header() {
 
         {/* Center: Navigation */}
         <nav className="hidden md:flex items-center gap-1 bg-gray-100/50 p-1 rounded-full border border-gray-100">
-          {user?.role?.includes("STUDENT") && (
+          {isStudent && (
             <>
               <NavLink to="/student/dashboard">Dashboard</NavLink>
               <NavLink to="/notes">Notes</NavLink>
@@ -43,19 +45,26 @@ export default function Header() {
             </>
           )}
 
-          {user?.role?.includes("LECTURER") && (
+          {isLecturer && (
             <>
               <NavLink to="/lecturer/dashboard">Dashboard</NavLink>
               <NavLink to="/notes">Notes</NavLink>
               <NavLink to="/flashcards">Flashcards</NavLink>
-              <NavLink to="/lecturer/rooms">Quiz Room</NavLink>
+              <NavLink to="/lecturer/rooms">Quiz Rooms</NavLink>
+            </>
+          )}
+
+          {isAdmin && (
+            <>
+              <NavLink to="/admin/dashboard">Admin</NavLink>
+              <NavLink to="/admin/users">Users</NavLink>
             </>
           )}
         </nav>
 
         {/* Right: User actions */}
         <div className="flex items-center gap-4">
-          
+
           {/* User badge */}
           <div className="hidden sm:flex items-center gap-3 pl-1 pr-4 py-1 rounded-full border border-gray-200 bg-white shadow-sm">
             <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
@@ -66,8 +75,7 @@ export default function Header() {
                 {user?.name ?? "User"}
               </span>
               <span className="text-gray-500 lowercase mt-0.5 leading-none">
-                {/* {user?.role?.[0]} */}
-                {user?.role?.join(", ")}
+                {user?.role?.join(", ").toLowerCase()}
               </span>
             </div>
           </div>
@@ -87,8 +95,6 @@ export default function Header() {
   );
 }
 
-/* ---------- Helper Component ---------- */
-
 function NavLink({
   to,
   children,
@@ -97,13 +103,12 @@ function NavLink({
   children: string;
 }) {
   const location = useLocation();
-  // Check if this link is currently active
   const isActive = location.pathname === to;
 
   return (
     <Link
       to={to}
-      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
         isActive
           ? "bg-white text-black shadow-sm"
           : "text-gray-500 hover:text-gray-900 hover:bg-gray-200/50"

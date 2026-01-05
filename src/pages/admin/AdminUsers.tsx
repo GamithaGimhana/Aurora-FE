@@ -49,7 +49,7 @@ const AcademicCapIcon = () => (
 
 export default function AdminUsers() {
   const dispatch = useAppDispatch();
-  const { users, loading } = useAppSelector((state) => state.adminUsers);
+  const { users, loading, error } = useAppSelector((state) => state.adminUsers);
   
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState<"ALL" | "STUDENT" | "LECTURER" | "ADMIN">("ALL");
@@ -103,6 +103,13 @@ export default function AdminUsers() {
                 <p className="text-gray-500 text-sm mt-1">Oversee platform users, manage permissions, and track engagement.</p>
             </div>
         </div>
+
+        {/* Error Message */}
+        {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 shadow-sm">
+            <strong className="font-semibold">Error:</strong> {error}
+        </div>
+        )}
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -223,7 +230,7 @@ export default function AdminUsers() {
                                         <td className="px-6 py-4">
                                             <div className="relative inline-block">
                                                 <select
-                                                    value={u.role[0]}
+                                                    value={u.role.includes("ADMIN") ? "ADMIN" : u.role[0]}
                                                     onChange={(e) => changeRole(u._id, e.target.value as Role)}
                                                     disabled={isAdmin}
                                                     className={`appearance-none pl-3 pr-8 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all border-0 shadow-sm ${

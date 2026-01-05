@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import * as authApi from "../../services/auth";
-import { type User } from "./authTypes";
+import { type Role, type User } from "./authTypes";
 
 export const loginThunk = createAsyncThunk<
   User,
@@ -32,5 +32,24 @@ export const getMeThunk = createAsyncThunk<
   } catch {
     localStorage.clear();
     return rejectWithValue("Session expired");
+  }
+});
+
+export const registerThunk = createAsyncThunk<
+  void,
+  {
+    name: string;
+    email: string;
+    password: string;
+    role: Role[];
+  },
+  { rejectValue: string }
+>("auth/register", async (payload, { rejectWithValue }) => {
+  try {
+    await authApi.register(payload);
+  } catch (err: any) {
+    return rejectWithValue(
+      err.response?.data?.message || "Registration failed"
+    );
   }
 });

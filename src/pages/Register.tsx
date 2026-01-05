@@ -1,8 +1,9 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { register } from "../services/auth";
 import { Link, useNavigate } from "react-router-dom";
 import type { Role } from "../store/auth/authTypes"; // adjust path
+import { registerThunk } from "../store/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 // --- Icons ---
 const UserIcon = () => (
@@ -28,8 +29,9 @@ const BadgeIcon = () => (
 );
 
 export default function Register() {
-  // ================= KEEPING ORIGINAL LOGIC INTACT =================
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -50,20 +52,18 @@ export default function Register() {
       return;
     }
 
-    try {
-      const payload = {
+    const result = await dispatch(
+      registerThunk({
         name,
         email,
         password,
         role: [role],
-      };
+      })
+    );
 
-      await register(payload);
+    if (registerThunk.fulfilled.match(result)) {
       alert("Registration successful! Please login.");
       navigate("/login");
-    } catch (error: any) {
-      console.error(error?.response?.data);
-      alert(error?.response?.data?.message || "Registration failed");
     }
   };
   // ================= END ORIGINAL LOGIC =================
@@ -86,6 +86,13 @@ export default function Register() {
               Start your journey with Aurora today.
             </p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+          <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 shadow-sm">
+              <strong className="font-semibold">Error:</strong> {error}
+          </div>
+          )}
 
           <form onSubmit={handleRegister} className="space-y-5">
             
@@ -182,9 +189,10 @@ export default function Register() {
 
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-gray-200 mt-4"
             >
-              Create Account
+              {loading ? "Creating..." : "Create Account"}
             </button>
           </form>
 

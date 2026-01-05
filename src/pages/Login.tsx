@@ -35,24 +35,21 @@ const LockClosedIcon = () => (
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
+  const { loading, error } = useAppSelector((state) => state.auth);
 
 
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("Admin@123");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (!email || !password) {
-      setError("All fields are required");
       return;
     }
 
-    try {
-      const result = await dispatch(
+    const result = await dispatch(
         loginThunk({ email, password })
       ).unwrap();
 
@@ -65,10 +62,8 @@ export default function Login() {
       } else {
         navigate("/student/dashboard");
       }
-    } catch (err: any) {
-      setError(err || "Login failed");
-    }
   };
+
   // ================= END ORIGINAL LOGIC =================
 
   return (

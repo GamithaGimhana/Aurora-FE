@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { type AuthState } from "./authTypes";
-import { loginThunk, getMeThunk } from "./authThunks";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { type AuthState, type User } from "./authTypes";
+import { loginThunk, getMeThunk, registerThunk } from "./authThunks";
 
 const initialState: AuthState = {
   user: (() => {
@@ -27,30 +27,43 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // LOGIN
-      .addCase(loginThunk.pending, (state) => {
+      .addCase(loginThunk.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginThunk.fulfilled, (state, action) => {
+      .addCase(loginThunk.fulfilled, (state: AuthState, action: PayloadAction<User>) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(loginThunk.rejected, (state, action) => {
+      .addCase(loginThunk.rejected, (state: AuthState, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload || "Login failed";
       })
 
       // GET ME
-      .addCase(getMeThunk.pending, (state) => {
+      .addCase(getMeThunk.pending, (state: AuthState) => {
         state.loading = true;
       })
-      .addCase(getMeThunk.fulfilled, (state, action) => {
+      .addCase(getMeThunk.fulfilled, (state: AuthState, action: PayloadAction<User>) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(getMeThunk.rejected, (state) => {
+      .addCase(getMeThunk.rejected, (state: AuthState, action: PayloadAction<any>) => {
         state.loading = false;
         state.user = null;
+      })
+
+      // REGISTER
+      .addCase(registerThunk.pending, (state: AuthState) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerThunk.fulfilled, (state: AuthState) => {
+        state.loading = false;
+      })
+      .addCase(registerThunk.rejected, (state: AuthState, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload || "Registration failed";
       });
   },
 });
