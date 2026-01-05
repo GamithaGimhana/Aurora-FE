@@ -66,7 +66,10 @@ export default function Header() {
         <div className="flex items-center gap-4">
 
           {/* User badge */}
-          <div className="hidden sm:flex items-center gap-3 pl-1 pr-4 py-1 rounded-full border border-gray-200 bg-white shadow-sm">
+          <Link
+            to="/profile"
+            className="hidden sm:flex items-center gap-3 pl-1 pr-4 py-1 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 transition cursor-pointer"
+          >
             <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
               {initial}
             </div>
@@ -78,9 +81,7 @@ export default function Header() {
                 {user?.role?.join(", ").toLowerCase()}
               </span>
             </div>
-          </div>
-
-          <div className="h-6 w-px bg-gray-200 hidden sm:block"></div>
+          </Link>
 
           {/* Logout */}
           <button

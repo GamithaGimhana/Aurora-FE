@@ -8,6 +8,7 @@ import ProtectedRoute from "./ProtectedRoute";
 const Welcome = lazy(() => import("../pages/Welcome"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
+const Profile = lazy(() => import("../pages/Profile"));
 
 // Admin
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
@@ -50,6 +51,7 @@ export default function Router() {
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
 
           {/* ------------------- Protected Routes ------------------- */}
           <Route element={<Layout />}>
