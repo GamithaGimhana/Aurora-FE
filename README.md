@@ -53,7 +53,10 @@ The platform emphasizes real-time interaction, intelligent learning tools, and s
 
 ## 🚀 Live Demo
 
-**🌐 Experience Aurora Live**: [https://aurora-fe-eight.vercel.app/](https://aurora-fe-eight.vercel.app/)
+**🌐 Experience Aurora Live**:
+
+- **Frontend**: [https://aurora-fe-eight.vercel.app/](https://aurora-fe-eight.vercel.app/)
+- **Backend API**: [https://aurora-be.vercel.app/](https://aurora-be.vercel.app/)
 
 > **Note**: The live demo is deployed on Vercel and connected to a backend API. You can explore all features by registering as a new user or using demo credentials (if provided).
 
