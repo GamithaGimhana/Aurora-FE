@@ -1,6 +1,5 @@
 {
-  "routes": [
-    { "src": "/(.*)", "dest": "src/main" },
-    { "src": "/api/v1/login", "dest": "src/pages/Login" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
