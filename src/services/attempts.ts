@@ -10,3 +10,8 @@ export const submitAttempt = async (attemptId: string, answers: { questionId: st
   const res = await api.post(`/attempts/${attemptId}/submit`, { answers });
   return res.data;
 };
+
+export const downloadAttemptReport = async (attemptId: string) => {
+  const response = await api.get(`/attempts/${attemptId}/report`, { responseType: "blob" });
+  return response.data;
+};

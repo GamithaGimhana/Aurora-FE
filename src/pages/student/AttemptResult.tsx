@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../services/api";
+import { downloadAttemptReport } from "../../services/attempts";
 
 // --- Icons ---
 const ChevronLeft = () => (
@@ -39,6 +40,7 @@ export default function AttemptResult() {
   const { attemptId } = useParams<{ attemptId: string }>();
   const [attempt, setAttempt] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -179,6 +181,32 @@ export default function AttemptResult() {
         </div>
 
         {/* Footer Action */}
+        {/* Download PDF Button */}
+        <button
+          disabled={downloading}
+          onClick={async () => {
+            try {
+              setDownloading(true);
+              const blob = await downloadAttemptReport(attempt._id);
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement("a");
+              link.href = url;
+              link.download = `attempt-${attempt._id}.pdf`;
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              window.URL.revokeObjectURL(url);
+            } catch (err) {
+              console.error(err);
+              alert("Failed to download PDF");
+            } finally { 
+              setDownloading(false); 
+            }
+          }}
+          className="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
+        >
+          {downloading ? "Downloading..." : "Download PDF"}
+        </button>
         <div className="text-center pt-4">
           <Link
             to="/student/dashboard"
