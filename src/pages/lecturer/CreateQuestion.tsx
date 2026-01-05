@@ -72,7 +72,6 @@ export default function CreateQuestion() {
         topic: topic.trim() || undefined,
       });
 
-      // alert("Question created successfully!"); // Optional
       navigate("/lecturer/questions"); // go to list page
     } catch (err) {
       console.error(err);

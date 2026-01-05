@@ -152,7 +152,7 @@ export default function Notes() {
                     </p>
                 </Link>
 
-                {/* Card Footer (Optional visual element) */}
+                {/* Card Footer */}
                 <div className="mt-6 pt-4 border-t border-gray-100 flex items-center text-xs text-gray-400 font-medium">
                     <span>View details</span>
                     <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600">Open →</span>

@@ -82,8 +82,6 @@ export default function LecturerRooms() {
         prev.map((r) => (r._id === roomId ? { ...r, active: !currentStatus } : r))
       );
 
-      // Call API (Assuming standard PUT/PATCH request to update status)
-      // If your backend endpoint is different (e.g., /toggle), update this line
       await api.patch(`/rooms/${roomId}/toggle`, { active: !currentStatus });
       
     } catch (err: any) {

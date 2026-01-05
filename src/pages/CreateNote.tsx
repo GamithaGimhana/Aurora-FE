@@ -34,7 +34,7 @@ export default function CreateNote() {
 
     try {
       await createNote({ title, content });
-      // Small delay to let the user see the button state (optional, just for feel)
+      // Small delay to let the user see the button state
       setTimeout(() => {
         alert("Note created successfully!");
         navigate("/notes");

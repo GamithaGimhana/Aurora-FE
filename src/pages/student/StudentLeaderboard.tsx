@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import api from "../../services/api"; // Assuming this is your axios instance
-// You might need to import a user context to know who the current user is
+import api from "../../services/api"; 
 // import { useAuth } from "../../hooks/useAuth"; 
 
 // --- Icons ---
@@ -32,8 +31,6 @@ export default function StudentLeaderboard() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Try to get current user ID from localStorage to highlight "You"
-  // Adjust this logic based on how you store your user data
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
   const currentUserId = currentUser._id || currentUser.id;
 
@@ -43,8 +40,6 @@ export default function StudentLeaderboard() {
         // const res = await api.get(`/attempts/room/${roomId}`);
         const res = await api.get(`/attempts/room/${roomId}`);
         setData(res.data.data);
-      } catch {
-        // Handle error silently or show toast
       } finally {
         setLoading(false);
       }
@@ -105,7 +100,7 @@ export default function StudentLeaderboard() {
                 </div>
             ) : (
                 <div className="divide-y divide-gray-100">
-                     {/* Column Headers (Optional for mobile, helpful for desktop) */}
+                     {/* Column Headers */}
                      <div className="hidden sm:grid grid-cols-12 px-6 py-3 bg-gray-50/50 text-xs font-bold text-gray-400 uppercase tracking-wider">
                         <div className="col-span-2 text-center">Rank</div>
                         <div className="col-span-6">Student</div>

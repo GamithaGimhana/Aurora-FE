@@ -56,7 +56,6 @@ export default function FlashcardsCreate() {
         console.log(res.message);
       }
       // success — backend response available in res
-      // alert(res.message || "Flashcard created!"); // Optional: Remove alert for smoother flow
       navigate("/student/flashcards");
     } catch (err: any) {
       // show better error info

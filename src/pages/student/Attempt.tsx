@@ -37,7 +37,7 @@ export default function Attempt() {
     const load = async () => {
       try {
         const res = await api.get(`/attempts/${attemptId}`);
-        const data = res.data.data; // Assuming structure based on your snippet
+        const data = res.data.data; 
         setAttempt(data);
 
         // Timer calculation
@@ -89,11 +89,9 @@ export default function Attempt() {
         { answers: payload }
       );
 
-      // Navigate to results page or show score
-      // For now, using your alert logic but formatted better
       alert(`Quiz Submitted!\nScore: ${res.data.score}/${res.data.total}`);
-    //   navigate("/student/dashboard"); // Or navigate to result view
-    navigate(`/student/attempt/result/${attemptId}`);
+      //   navigate("/student/dashboard");
+      navigate(`/student/attempt/result/${attemptId}`);
 
     } catch (err) {
       alert("Failed to submit");
