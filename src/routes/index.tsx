@@ -20,6 +20,7 @@ const QuizRoom = lazy(() => import("../pages/student/QuizRoom"));
 const JoinQuizRoom = lazy(() => import("../pages/student/JoinRoom"));
 const Attempt = lazy(() => import("../pages/student/Attempt"));
 const AttemptResult = lazy(() => import("../pages/student/AttemptResult"));
+const StudentLeaderboard = lazy(() => import("../pages/student/StudentLeaderboard"));
 
 // Lecturer
 const LecturerDashboard = lazy(() => import("../pages/lecturer/LecturerDashboard"));
@@ -123,6 +124,15 @@ export default function Router() {
               element={
                 <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
                   <AttemptResult />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/student/rooms/:roomId/leaderboard"
+              element={
+                <ProtectedRoute roles={["STUDENT", "LECTURER", "ADMIN"]}>
+                  <StudentLeaderboard />
                 </ProtectedRoute>
               }
             />
