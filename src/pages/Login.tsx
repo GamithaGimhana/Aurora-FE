@@ -38,8 +38,8 @@ export default function Login() {
   const { loading, error } = useAppSelector((state) => state.auth);
 
 
-  const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("Admin@123");
+  const [email] = useState();
+  const [password] = useState();
   // const [error, setError] = useState("");
 
   const handleLogin = async (e: FormEvent) => {
@@ -143,7 +143,6 @@ export default function Login() {
                   placeholder="name@example.com"
                   className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
                   required
                 />
@@ -168,7 +167,6 @@ export default function Login() {
                   placeholder="••••••••"
                   className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
                   required
                 />
