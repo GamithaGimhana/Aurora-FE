@@ -1,37 +1,14 @@
 import { useState } from "react";
 import { createFlashcard } from "../services/flashcards";
 import { useNavigate, Link } from "react-router-dom";
-
-// --- Icons ---
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const TagIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
-  </svg>
-);
-
-const QuestionIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-indigo-500">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-  </svg>
-);
-
-const BulbIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-yellow-500">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-4.5 6.01 6.01 0 00-1.5-4.5 6.01 6.01 0 00-1.5 4.5 6.01 6.01 0 001.5 4.5zM13.5 18a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 01-3 0m3 0h-3" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-  </svg>
-);
+import { 
+  ChevronLeft, 
+  Tag, 
+  HelpCircle, 
+  Lightbulb, 
+  Plus, 
+  Loader2 
+} from "lucide-react";
 
 export default function FlashcardsCreate() {
   const [front, setFront] = useState("");
@@ -84,7 +61,7 @@ export default function FlashcardsCreate() {
                 to="/flashcards"
                 className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
             >
-                <ChevronLeft />
+                <ChevronLeft size={20} />
             </Link>
             <h1 className="text-xl font-bold">New Flashcard</h1>
         </div>
@@ -96,7 +73,7 @@ export default function FlashcardsCreate() {
           {/* Topic Section */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                <TagIcon /> Topic
+                <Tag className="w-5 h-5 text-gray-400" /> Topic
              </label>
              <input
                 className="w-full text-lg border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none bg-gray-50 focus:bg-white transition-all placeholder-gray-400"
@@ -116,7 +93,7 @@ export default function FlashcardsCreate() {
             {/* Front (Question) */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col h-80">
                 <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex items-center gap-2">
-                    <QuestionIcon />
+                    <HelpCircle className="w-5 h-5 text-indigo-500" />
                     <span className="text-sm font-bold text-gray-600 uppercase tracking-wide">Front</span>
                 </div>
                 <textarea
@@ -131,7 +108,7 @@ export default function FlashcardsCreate() {
             {/* Back (Answer) */}
             <div className="bg-indigo-50/50 rounded-2xl shadow-sm border border-indigo-100 overflow-hidden flex flex-col h-80">
                 <div className="bg-indigo-100/50 border-b border-indigo-100 px-4 py-3 flex items-center gap-2">
-                    <BulbIcon />
+                    <Lightbulb className="w-5 h-5 text-yellow-500" />
                     <span className="text-sm font-bold text-indigo-900 uppercase tracking-wide">Back</span>
                 </div>
                 <textarea
@@ -155,15 +132,12 @@ export default function FlashcardsCreate() {
             >
               {loading ? (
                   <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
+                      <Loader2 className="animate-spin h-5 w-5 text-white" />
                       Creating...
                   </span>
               ) : (
                   <>
-                    <PlusIcon /> Create Flashcard
+                    <Plus size={20} /> Create Flashcard
                   </>
               )}
             </button>

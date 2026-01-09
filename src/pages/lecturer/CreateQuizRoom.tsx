@@ -1,43 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { useNavigate, Link } from "react-router-dom";
-
-// --- Icons ---
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const GlobeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S12 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S12 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-  </svg>
-);
-
-const LockIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-  </svg>
-);
-
-const ClockIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const CalendarIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-    </svg>
-);
-
-const SparklesIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-indigo-100">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-    </svg>
-);
+import { 
+  ChevronLeft, 
+  Globe, 
+  Lock, 
+  Clock, 
+  Calendar, 
+  Sparkles 
+} from "lucide-react";
 
 export default function CreateQuizRoom() {
   const [quizzes, setQuizzes] = useState<any[]>([]);
@@ -106,14 +77,14 @@ export default function CreateQuizRoom() {
                     to="/lecturer/dashboard"
                     className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
                 >
-                    <ChevronLeft />
+                    <ChevronLeft size={20} />
                 </Link>
                 <h1 className="text-lg font-bold">New Session</h1>
             </div>
             
             {/* Quick Tip for Lecturer */}
             <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full">
-                <SparklesIcon />
+                <Sparkles className="w-4 h-4" />
                 <span>Room codes are generated automatically</span>
             </div>
         </div>
@@ -182,8 +153,8 @@ export default function CreateQuizRoom() {
                         <div>
                             <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Duration (Minutes)</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none group-focus-within:text-indigo-600 transition-colors">
-                                    <ClockIcon />
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none group-focus-within:text-indigo-600 transition-colors text-gray-400">
+                                    <Clock className="w-5 h-5" />
                                 </div>
                                 <input 
                                     type="number" 
@@ -226,7 +197,7 @@ export default function CreateQuizRoom() {
                              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Starts At</label>
                              <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <CalendarIcon />
+                                    <Calendar className="w-5 h-5" />
                                 </div>
                                 <input 
                                     type="datetime-local" 
@@ -240,7 +211,7 @@ export default function CreateQuizRoom() {
                              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Ends At</label>
                              <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <CalendarIcon />
+                                    <Calendar className="w-5 h-5" />
                                 </div>
                                 <input 
                                     type="datetime-local" 
@@ -272,7 +243,7 @@ export default function CreateQuizRoom() {
                             }`}
                         >
                             <div className={`mt-0.5 ${visibility === "PUBLIC" ? "text-indigo-600" : "text-gray-400"}`}>
-                                <GlobeIcon />
+                                <Globe className="w-6 h-6" strokeWidth={1.5} />
                             </div>
                             <div>
                                 <h3 className={`font-bold text-sm ${visibility === "PUBLIC" ? "text-indigo-900" : "text-gray-900"}`}>Public Room</h3>
@@ -290,7 +261,7 @@ export default function CreateQuizRoom() {
                             }`}
                         >
                             <div className={`mt-0.5 ${visibility === "PRIVATE" ? "text-indigo-600" : "text-gray-400"}`}>
-                                <LockIcon />
+                                <Lock className="w-6 h-6" strokeWidth={1.5} />
                             </div>
                             <div>
                                 <h3 className={`font-bold text-sm ${visibility === "PRIVATE" ? "text-indigo-900" : "text-gray-900"}`}>Private Room</h3>

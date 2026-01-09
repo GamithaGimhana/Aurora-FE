@@ -2,31 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../services/api";
 import { downloadAttemptReport } from "../../services/attempts";
-
-// --- Icons ---
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const CheckCircleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-green-500">
-    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-  </svg>
-);
-
-const XCircleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-red-500">
-    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clipRule="evenodd" />
-  </svg>
-);
-
-const TrophyIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-yellow-500">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-8.718c-.621 0-1.125.504-1.125 1.125v3.375m3-9h6v3.75H9.75a3.75 3.75 0 01-3.75-3.75v-3h11.25v3a3.75 3.75 0 01-3.75 3.75z" />
-  </svg>
-);
+import { 
+  ChevronLeft, 
+  CheckCircle, 
+  XCircle, 
+  Trophy, 
+  Download 
+} from "lucide-react";
 
 // --- Helper for Grades ---
 const getGrade = (percentage: number) => {
@@ -84,7 +66,7 @@ export default function AttemptResult() {
                 to="/student/dashboard"
                 className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
             >
-                <ChevronLeft />
+                <ChevronLeft size={20} />
             </Link>
             <h1 className="text-xl font-bold">Result Summary</h1>
         </div>
@@ -98,7 +80,7 @@ export default function AttemptResult() {
             
             <div className="flex flex-col items-center justify-center mb-6">
                 <div className={`p-4 rounded-full ${grade.bg} mb-4`}>
-                    <TrophyIcon />
+                    <Trophy className="w-12 h-12 text-yellow-500" strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900">{quizRoom.quiz.title}</h2>
                 <p className="text-gray-500 text-sm">Attempt #{attempt.attemptNumber}</p>
@@ -141,7 +123,11 @@ export default function AttemptResult() {
                 >
                     <div className="flex items-start gap-4 mb-4">
                         <div className="shrink-0 mt-1">
-                            {isCorrect ? <CheckCircleIcon /> : <XCircleIcon />}
+                            {isCorrect ? (
+                                <CheckCircle className="w-6 h-6 text-green-500" />
+                            ) : (
+                                <XCircle className="w-6 h-6 text-red-500" />
+                            )}
                         </div>
                         <div>
                             <h3 className="font-semibold text-gray-900 leading-relaxed">
@@ -181,39 +167,41 @@ export default function AttemptResult() {
         </div>
 
         {/* Footer Action */}
-        {/* Download PDF Button */}
-        <button
-          disabled={downloading}
-          onClick={async () => {
-            try {
-              setDownloading(true);
-              const blob = await downloadAttemptReport(attempt._id);
-              const url = window.URL.createObjectURL(blob);
-              const link = document.createElement("a");
-              link.href = url;
-              link.download = `attempt-${attempt._id}.pdf`;
-              document.body.appendChild(link);
-              link.click();
-              link.remove();
-              window.URL.revokeObjectURL(url);
-            } catch (err) {
-              console.error(err);
-              alert("Failed to download PDF");
-            } finally { 
-              setDownloading(false); 
-            }
-          }}
-          className="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
-        >
-          {downloading ? "Downloading..." : "Download PDF"}
-        </button>
-        <div className="text-center pt-4">
-          <Link
-            to="/student/dashboard"
-            className="inline-block w-full sm:w-auto bg-black text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-transform active:scale-95"
-          >
-            Back to Dashboard
-          </Link>
+        <div className="flex flex-col gap-4 text-center pt-4">
+             {/* Download PDF Button */}
+            <button
+                disabled={downloading}
+                onClick={async () => {
+                    try {
+                    setDownloading(true);
+                    const blob = await downloadAttemptReport(attempt._id);
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = `attempt-${attempt._id}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.URL.revokeObjectURL(url);
+                    } catch (err) {
+                    console.error(err);
+                    alert("Failed to download PDF");
+                    } finally { 
+                    setDownloading(false); 
+                    }
+                }}
+                className="w-full sm:w-auto mx-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
+            >
+                <Download size={20} />
+                {downloading ? "Downloading..." : "Download Report"}
+            </button>
+
+            <Link
+                to="/student/dashboard"
+                className="w-full sm:w-auto mx-auto inline-block bg-black text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-transform active:scale-95"
+            >
+                Back to Dashboard
+            </Link>
         </div>
 
       </div>

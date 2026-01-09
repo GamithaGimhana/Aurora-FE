@@ -7,45 +7,15 @@ import {
   deleteUserThunk,
 } from "../../store/adminUsers/adminUsersThunks";
 import type { Role } from "../../store/auth/authTypes";
-
-// --- Icons ---
-const TrashIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-  </svg>
-);
-
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const UsersIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-indigo-600">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-    </svg>
-);
-
-const ShieldCheckIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-purple-600">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-    </svg>
-);
-
-const AcademicCapIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-600">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.221 69.17 69.17 0 00-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5z" />
-    </svg>
-);
-
-// --- Component ---
+import { 
+  Trash2, 
+  Search, 
+  ChevronLeft, 
+  Users, 
+  ShieldCheck, 
+  GraduationCap, 
+  ChevronDown 
+} from "lucide-react";
 
 export default function AdminUsers() {
   const dispatch = useAppDispatch();
@@ -96,7 +66,7 @@ export default function AdminUsers() {
                 to="/admin/dashboard"
                 className="p-2 -ml-2 hover:bg-white bg-white/50 border border-transparent hover:border-gray-200 rounded-full transition-all text-gray-500 shadow-sm"
             >
-                <ChevronLeft />
+                <ChevronLeft size={20} />
             </Link>
             <div>
                 <h1 className="text-2xl font-bold text-gray-900 tracking-tight">User Management</h1>
@@ -114,21 +84,27 @@ export default function AdminUsers() {
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-indigo-50 rounded-xl"><UsersIcon /></div>
+                <div className="p-3 bg-indigo-50 rounded-xl">
+                    <Users className="w-6 h-6 text-indigo-600" strokeWidth={1.5} />
+                </div>
                 <div>
                     <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Total Users</p>
                     <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
                 </div>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-blue-50 rounded-xl"><AcademicCapIcon /></div>
+                <div className="p-3 bg-blue-50 rounded-xl">
+                    <GraduationCap className="w-6 h-6 text-blue-600" strokeWidth={1.5} />
+                </div>
                 <div>
                     <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Lecturers</p>
                     <p className="text-2xl font-bold text-gray-900">{stats.lecturers}</p>
                 </div>
             </div>
             <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                <div className="p-3 bg-purple-50 rounded-xl"><ShieldCheckIcon /></div>
+                <div className="p-3 bg-purple-50 rounded-xl">
+                    <ShieldCheck className="w-6 h-6 text-purple-600" strokeWidth={1.5} />
+                </div>
                 <div>
                     <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">Admins</p>
                     <p className="text-2xl font-bold text-gray-900">{stats.admins}</p>
@@ -161,7 +137,7 @@ export default function AdminUsers() {
                 {/* Search */}
                 <div className="relative w-full md:w-72">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <SearchIcon />
+                        <Search className="w-5 h-5 text-gray-400" />
                     </div>
                     <input 
                         type="text" 
@@ -198,7 +174,7 @@ export default function AdminUsers() {
                             <tr>
                                 <td colSpan={4} className="px-6 py-16 text-center">
                                     <div className="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3 text-2xl">
-                                        🔍
+                                        <Search className="w-8 h-8 text-gray-300" />
                                     </div>
                                     <p className="text-gray-900 font-medium">No users found</p>
                                     <p className="text-gray-500 text-sm mt-1">Try adjusting your filters or search terms.</p>
@@ -248,7 +224,7 @@ export default function AdminUsers() {
                                                 {/* Custom Arrow for select */}
                                                 {!isAdmin && (
                                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                                        <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+                                                        <ChevronDown size={12} strokeWidth={3} />
                                                     </div>
                                                 )}
                                             </div>
@@ -264,7 +240,7 @@ export default function AdminUsers() {
                                                     className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
                                                     title="Delete User"
                                                 >
-                                                    <TrashIcon />
+                                                    <Trash2 className="w-5 h-5" />
                                                 </button>
                                             )}
                                         </td>

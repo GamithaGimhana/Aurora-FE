@@ -2,37 +2,14 @@ import { type FormEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import QuestionBank from "./QuestionBank";
-
-// --- Icons ---
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const PlusIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-  </svg>
-);
-
-const TrashIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-  </svg>
-);
-
-const CheckCircleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-green-600">
-    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-  </svg>
-);
-
-const FolderPlusIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-  </svg>
-);
+import { 
+  ChevronLeft, 
+  Plus, 
+  Trash2, 
+  CheckCircle, 
+  FolderPlus,
+  ChevronDown 
+} from "lucide-react";
 
 interface QuestionPayload {
   question: string;
@@ -125,7 +102,7 @@ export default function CreateQuiz() {
                 to="/lecturer/dashboard"
                 className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500"
             >
-                <ChevronLeft />
+                <ChevronLeft size={20} />
             </Link>
             <h1 className="text-xl font-bold">New Quiz</h1>
         </div>
@@ -168,7 +145,7 @@ export default function CreateQuiz() {
                                 <option value="HARD">Hard</option>
                             </select>
                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                <ChevronDown size={16} />
                             </div>
                         </div>
                     </div>
@@ -184,7 +161,7 @@ export default function CreateQuiz() {
                         onClick={addQuestion} 
                         className="flex items-center gap-2 text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition-colors"
                     >
-                        <PlusIcon /> Add New
+                        <Plus size={16} strokeWidth={3} /> Add New
                     </button>
                 </div>
 
@@ -195,7 +172,7 @@ export default function CreateQuiz() {
                             <span className="font-bold text-gray-500 text-xs uppercase tracking-wide">Question {i + 1}</span>
                             {questions.length > 1 && (
                                 <button type="button" onClick={() => removeQuestion(i)} className="text-gray-400 hover:text-red-500 transition-colors" title="Remove">
-                                    <TrashIcon />
+                                    <Trash2 size={18} />
                                 </button>
                             )}
                         </div>
@@ -223,7 +200,7 @@ export default function CreateQuiz() {
                             </div>
 
                             <div className="bg-green-50 rounded-xl p-4 flex items-center gap-3">
-                                <CheckCircleIcon />
+                                <CheckCircle className="w-5 h-5 text-green-600" />
                                 <input 
                                     value={q.answer} 
                                     onChange={(e) => updateQuestionField(i, "answer", e.target.value)} 
@@ -240,7 +217,7 @@ export default function CreateQuiz() {
             {/* Section 3: Question Bank */}
             <section className="mb-10">
                 <div className="flex items-center gap-2 mb-4 px-2">
-                    <FolderPlusIcon />
+                    <FolderPlus className="w-6 h-6 text-gray-700" strokeWidth={1.5} />
                     <h2 className="text-lg font-bold text-gray-800">From Question Bank</h2>
                 </div>
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">

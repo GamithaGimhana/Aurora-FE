@@ -4,29 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import type { Role } from "../store/auth/authTypes"; // adjust path
 import { registerThunk } from "../store/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-
-// --- Icons ---
-const UserIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-    <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
-  </svg>
-);
-const MailIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-    <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
-    <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
-  </svg>
-);
-const LockClosedIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-    <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
-  </svg>
-);
-const BadgeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.333c-.28-.354-.504-.746-.666-1.166H8.333a3.996 3.996 0 01-.667 1.166A3.989 3.989 0 015 15a3.989 3.989 0 01-2.667-1.333 1 1 0 01-.285-1.05l1.738-5.42-1.233-.616a1 1 0 01.894-1.79l1.599.8L9 4.323V3a1 1 0 011-1zm-5 8.274l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L5 10.274zm10 0l-.818 2.552c.25.112.526.174.818.174.292 0 .569-.062.818-.174L15 10.274z" clipRule="evenodd" />
-  </svg>
-);
+import { 
+  User, 
+  Mail, 
+  Lock, 
+  IdCard, 
+  ChevronDown, 
+  AlertCircle, 
+  Loader2 
+} from "lucide-react";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -66,7 +52,6 @@ export default function Register() {
       navigate("/login");
     }
   };
-  // ================= END ORIGINAL LOGIC =================
 
   return (
     <div className="min-h-screen flex bg-white font-sans text-gray-900">
@@ -89,8 +74,11 @@ export default function Register() {
 
           {/* Error Message */}
           {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 shadow-sm">
-              <strong className="font-semibold">Error:</strong> {error}
+          <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 shadow-sm flex items-center gap-2">
+              <AlertCircle size={18} />
+              <div>
+                <strong className="font-semibold">Error:</strong> {error}
+              </div>
           </div>
           )}
 
@@ -101,7 +89,7 @@ export default function Register() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                 <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <UserIcon />
+                        <User size={20} />
                     </div>
                     <input
                         type="text"
@@ -118,7 +106,7 @@ export default function Register() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                 <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <MailIcon />
+                        <Mail size={20} />
                     </div>
                     <input
                         type="email"
@@ -136,7 +124,7 @@ export default function Register() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                     <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <LockClosedIcon />
+                            <Lock size={20} />
                         </div>
                         <input
                             type="password"
@@ -152,7 +140,7 @@ export default function Register() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Confirm</label>
                     <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <LockClosedIcon />
+                            <Lock size={20} />
                         </div>
                         <input
                             type="password"
@@ -170,11 +158,11 @@ export default function Register() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">I am a...</label>
                 <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <BadgeIcon />
+                        <IdCard size={20} />
                     </div>
                     {/* Custom chevron to replace default browser arrow */}
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <ChevronDown size={16} className="text-gray-500" />
                     </div>
                     <select
                         className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none appearance-none cursor-pointer"
@@ -190,9 +178,16 @@ export default function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-gray-200 mt-4"
+              className={`w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all transform hover:-translate-y-0.5 shadow-lg shadow-gray-200 mt-4 flex justify-center items-center gap-2 ${
+                  loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
-              {loading ? "Creating..." : "Create Account"}
+              {loading ? (
+                  <>
+                    <Loader2 className="animate-spin h-5 w-5 text-white" />
+                    Creating...
+                  </>
+              ) : "Create Account"}
             </button>
           </form>
 

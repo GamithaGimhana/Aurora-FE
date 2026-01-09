@@ -2,44 +2,14 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchAdminStatsThunk } from "../../store/adminStats/adminStatsThunks";
-
-/* ---------- Icons ---------- */
-
-const UsersIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-  </svg>
-);
-
-const DocumentIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-  </svg>
-);
-
-const CubeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-  </svg>
-);
-
-const PresentationIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
-  </svg>
-);
-
-const ActivityIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-  </svg>
-);
-
-const ChevronRight = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-  </svg>
-);
+import { 
+  Users, 
+  FileText, 
+  Box, 
+  Presentation, 
+  Activity, 
+  ChevronRight 
+} from "lucide-react";
 
 /* ---------- Components ---------- */
 
@@ -60,7 +30,8 @@ const AdminStatCard = ({ label, value, icon: Icon, colorTheme }: any) => {
         <h3 className="text-3xl font-extrabold text-gray-900">{value}</h3>
       </div>
       <div className={`p-4 rounded-xl ring-1 ${style} group-hover:scale-110 transition-transform`}>
-        <Icon />
+        {/* Lucide icons default to 24px (w-6 h-6). We set strokeWidth to 1.5 to match your original thin style */}
+        <Icon size={24} strokeWidth={1.5} />
       </div>
     </div>
   );
@@ -104,7 +75,7 @@ export default function AdminDashboard() {
         {/* Stats Grid */}
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <ActivityIcon /> Platform Metrics
+            <Activity className="w-6 h-6 text-gray-500" /> Platform Metrics
           </h2>
 
           {loading ? (
@@ -118,10 +89,10 @@ export default function AdminDashboard() {
             </div>
           ) : stats ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <AdminStatCard label="Total Users" value={stats.users} icon={UsersIcon} colorTheme="blue" />
-              <AdminStatCard label="Study Notes" value={stats.notes} icon={DocumentIcon} colorTheme="indigo" />
-              <AdminStatCard label="Quizzes Created" value={stats.quizzes} icon={CubeIcon} colorTheme="purple" />
-              <AdminStatCard label="Active Rooms" value={stats.rooms} icon={PresentationIcon} colorTheme="orange" />
+              <AdminStatCard label="Total Users" value={stats.users} icon={Users} colorTheme="blue" />
+              <AdminStatCard label="Study Notes" value={stats.notes} icon={FileText} colorTheme="indigo" />
+              <AdminStatCard label="Quizzes Created" value={stats.quizzes} icon={Box} colorTheme="purple" />
+              <AdminStatCard label="Active Rooms" value={stats.rooms} icon={Presentation} colorTheme="orange" />
             </div>
           ) : (
             <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-500">
@@ -142,9 +113,9 @@ export default function AdminDashboard() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 bg-slate-100 rounded-xl group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                    <UsersIcon />
+                    <Users size={24} strokeWidth={1.5} />
                   </div>
-                  <ChevronRight />
+                  <ChevronRight size={16} />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-1">User Management</h3>
                 <p className="text-sm text-gray-500">
@@ -155,7 +126,7 @@ export default function AdminDashboard() {
               <div className="group block bg-white border border-gray-200 rounded-2xl p-6 shadow-sm opacity-60 cursor-not-allowed">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 bg-gray-100 rounded-xl text-gray-400">
-                    <CubeIcon />
+                    <Box size={24} strokeWidth={1.5} />
                   </div>
                 </div>
                 <h3 className="font-bold text-gray-900 mb-1">Content Moderation</h3>

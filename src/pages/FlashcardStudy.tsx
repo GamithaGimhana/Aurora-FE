@@ -1,37 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getMyFlashcards } from "../services/flashcards";
-
-// --- Icons ---
-const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const ChevronRight = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-  </svg>
-);
-
-const ShuffleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-  </svg>
-);
-
-const XMarkIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
-
-const ArrowPathIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 animate-spin">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-  </svg>
-);
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Shuffle, 
+  X, 
+  Loader2 
+} from "lucide-react";
 
 interface Flashcard {
   _id: string;
@@ -67,7 +43,7 @@ export default function FlashcardStudy() {
 
   if (loading) return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center text-gray-400 gap-2">
-        <ArrowPathIcon /> Loading deck...
+        <Loader2 className="animate-spin" /> Loading deck...
     </div>
   );
 
@@ -186,14 +162,14 @@ export default function FlashcardStudy() {
                     className="w-12 h-12 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition shadow-sm active:scale-95"
                     title="Previous Card"
                 >
-                    <ChevronLeft />
+                    <ChevronLeft size={24} />
                 </button>
 
                 <button
                     onClick={shuffle}
                     className="flex items-center gap-2 px-5 py-3 rounded-full bg-indigo-50 text-indigo-600 font-medium hover:bg-indigo-100 transition shadow-sm active:scale-95"
                 >
-                    <ShuffleIcon /> Shuffle
+                    <Shuffle size={20} /> Shuffle
                 </button>
 
                 <button
@@ -201,7 +177,7 @@ export default function FlashcardStudy() {
                     className="w-12 h-12 flex items-center justify-center rounded-full bg-black text-white hover:bg-gray-800 transition shadow-lg active:scale-95"
                     title="Next Card"
                 >
-                    <ChevronRight />
+                    <ChevronRight size={24} />
                 </button>
             </div>
 
@@ -210,7 +186,7 @@ export default function FlashcardStudy() {
                 onClick={() => navigate("/flashcards")}
                 className="flex items-center gap-2 text-gray-400 hover:text-red-500 font-medium transition-colors text-sm px-4 py-2"
             >
-                <XMarkIcon /> Quit
+                <X size={20} /> Quit
             </button>
         </div>
 

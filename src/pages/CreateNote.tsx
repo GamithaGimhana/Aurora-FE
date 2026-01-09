@@ -1,19 +1,7 @@
 import { useState } from "react";
 import { createNote } from "../services/notes";
 import { useNavigate, Link } from "react-router-dom";
-
-// --- Icons ---
-const ArrowLeftIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-  </svg>
-);
-
-const SaveIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-  </svg>
-);
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
 
 export default function CreateNote() {
   const navigate = useNavigate();
@@ -56,7 +44,7 @@ export default function CreateNote() {
                 to="/notes" 
                 className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors text-sm font-medium"
             >
-                <ArrowLeftIcon /> Back to Notes
+                <ArrowLeft size={20} /> Back to Notes
             </Link>
             <div className="text-sm text-gray-400">
                 Drafting...
@@ -77,10 +65,13 @@ export default function CreateNote() {
                     }`}
                 >
                     {isSubmitting ? (
-                        "Saving..."
+                        <>
+                            <Loader2 className="animate-spin h-5 w-5 text-white" />
+                            Saving...
+                        </>
                     ) : (
                         <>
-                            <SaveIcon /> Save Note
+                            <Save size={20} /> Save Note
                         </>
                     )}
                 </button>

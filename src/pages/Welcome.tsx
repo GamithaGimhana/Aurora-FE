@@ -1,4 +1,14 @@
 import { Link } from "react-router-dom";
+import { 
+  ArrowRight, 
+  Sparkles, 
+  Layers, 
+  LayoutTemplate, 
+  TrendingUp, 
+  Twitter, 
+  Linkedin, 
+  Instagram 
+} from "lucide-react";
 
 // ------------------- SUB-COMPONENTS -------------------
 
@@ -61,7 +71,7 @@ function RoleCard({
         </h3>
         <p className="text-gray-500 mt-3">{description}</p>
         <div className="mt-6 flex items-center text-sm font-bold text-black group-hover:text-indigo-600 transition-colors group-hover:translate-x-2 transition-transform">
-          Get started <span className="ml-2">→</span>
+          Get started <ArrowRight className="ml-2 w-4 h-4" />
         </div>
       </div>
     </Link>
@@ -71,12 +81,17 @@ function RoleCard({
 function BenefitItem({
   title,
   description,
+  icon: Icon,
 }: {
   title: string;
   description: string;
+  icon: React.ElementType;
 }) {
   return (
     <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 hover:bg-white hover:shadow-md transition-all">
+      <div className="w-10 h-10 rounded-lg bg-white border border-gray-200 flex items-center justify-center mb-4 text-indigo-600 shadow-sm">
+        <Icon size={20} />
+      </div>
       <h3 className="font-semibold text-lg text-gray-900">{title}</h3>
       <p className="text-sm text-gray-600 mt-2">{description}</p>
     </div>
@@ -125,10 +140,10 @@ function Footer() {
         
         <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <p>© {new Date().getFullYear()} Aurora Education Inc.</p>
-          <div className="flex gap-4 mt-4 md:mt-0">
-            <span>Twitter</span>
-            <span>LinkedIn</span>
-            <span>Instagram</span>
+          <div className="flex gap-6 mt-4 md:mt-0">
+            <Twitter className="w-5 h-5 hover:text-gray-900 cursor-pointer transition-colors" />
+            <Linkedin className="w-5 h-5 hover:text-gray-900 cursor-pointer transition-colors" />
+            <Instagram className="w-5 h-5 hover:text-gray-900 cursor-pointer transition-colors" />
           </div>
         </div>
       </div>
@@ -165,8 +180,8 @@ export default function Welcome() {
           
           {/* Text Content */}
           <div className="text-center lg:text-left z-10">
-            <div className="inline-block px-3 py-1 mb-6 text-xs font-semibold tracking-wider text-indigo-600 uppercase bg-indigo-50 rounded-full">
-              New: Live Quiz Rooms
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-semibold tracking-wider text-indigo-600 uppercase bg-indigo-50 rounded-full">
+              <Sparkles className="w-3 h-3" /> New: Live Quiz Rooms
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 leading-[1.1]">
               Meet Aurora. <br/>
@@ -284,14 +299,17 @@ export default function Welcome() {
 
         <div className="grid md:grid-cols-3 gap-6">
           <BenefitItem
+            icon={Layers}
             title="All-in-One Ecosystem"
             description="No need for three separate apps. Your notes connect directly to your quizzes."
           />
           <BenefitItem
+            icon={LayoutTemplate}
             title="Focus-First Design"
             description="A clean, minimalist interface designed to keep you in the flow state."
           />
           <BenefitItem
+            icon={TrendingUp}
             title="Built to Scale"
             description="Perfect for solo study sessions or lecture halls with 500+ students."
           />

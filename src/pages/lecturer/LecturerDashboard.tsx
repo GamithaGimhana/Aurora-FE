@@ -1,31 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-
-/* ---------- Icons ---------- */
-const DocumentIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-  </svg>
-);
-
-const FlashcardIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v8.25A2.25 2.25 0 006 16.5h2.25m8.25-8.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-7.5A2.25 2.25 0 018.25 18v-1.5m8.25-8.25h-6a2.25 2.25 0 00-2.25 2.25v6" />
-  </svg>
-);
-
-const QuizIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const PresentationIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className || "w-6 h-6"}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-  </svg>
-);
+import { 
+  FileText, 
+  Layers, 
+  CheckCircle, 
+  Presentation 
+} from "lucide-react";
 
 /* ---------- UI Blocks ---------- */
 
@@ -38,7 +19,7 @@ function StatCard({
 }: {
   title: string;
   value: number;
-  icon: React.ElementType; // Correct Type
+  icon: React.ElementType;
   color: string;
   loading: boolean;
 }) {
@@ -51,6 +32,7 @@ function StatCard({
         </p>
       </div>
       <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>
+        {/* Lucide icons accept className for size and color */}
         <Icon className={`w-8 h-8 ${color.replace("bg-", "text-")}`} />
       </div>
     </div>
@@ -67,7 +49,7 @@ function ActionCard({
   title: string;
   description: string;
   to: string;
-  icon: React.ElementType; // Correct Type
+  icon: React.ElementType;
   special?: boolean;
 }) {
   return (
@@ -86,7 +68,7 @@ function ActionCard({
             : "bg-gray-50 text-gray-900 group-hover:bg-black group-hover:text-white"
         }`}
       >
-        <Icon />
+        <Icon size={24} />
       </div>
 
       <h3 className={`font-bold text-lg ${special ? "text-indigo-900" : "text-gray-900"}`}>
@@ -192,10 +174,10 @@ export default function LecturerDashboard() {
 
         {/* Stats */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard title="Active Notes" value={stats.notes} icon={DocumentIcon} color="bg-blue-500" loading={loading} />
-          <StatCard title="Flashcard Sets" value={stats.flashcards} icon={FlashcardIcon} color="bg-orange-500" loading={loading} />
-          <StatCard title="Total Quizzes" value={stats.quizzes} icon={QuizIcon} color="bg-green-500" loading={loading} />
-          <StatCard title="Live Rooms" value={stats.rooms} icon={PresentationIcon} color="bg-purple-500" loading={loading} />
+          <StatCard title="Active Notes" value={stats.notes} icon={FileText} color="bg-blue-500" loading={loading} />
+          <StatCard title="Flashcard Sets" value={stats.flashcards} icon={Layers} color="bg-orange-500" loading={loading} />
+          <StatCard title="Total Quizzes" value={stats.quizzes} icon={CheckCircle} color="bg-green-500" loading={loading} />
+          <StatCard title="Live Rooms" value={stats.rooms} icon={Presentation} color="bg-purple-500" loading={loading} />
         </section>
 
         {/* Actions Grid */}
@@ -206,11 +188,11 @@ export default function LecturerDashboard() {
           </h2>
 
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ActionCard title="Notes" to="/notes" description="Write structured study notes." icon={DocumentIcon} />
-            <ActionCard title="Flashcards" to="/flashcards" description="Design active recall decks." icon={FlashcardIcon} />
-            <ActionCard title="Question Bank" to="/lecturer/questions" description="Manage your library of questions." icon={QuizIcon} />
-            <ActionCard title="Create Quiz" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={QuizIcon} />
-            <ActionCard title="Launch Live Room" to="/lecturer/rooms/create" description="Start a synchronous quiz session." icon={PresentationIcon} />
+            <ActionCard title="Notes" to="/notes" description="Write structured study notes." icon={FileText} />
+            <ActionCard title="Flashcards" to="/flashcards" description="Design active recall decks." icon={Layers} />
+            <ActionCard title="Question Bank" to="/lecturer/questions" description="Manage your library of questions." icon={CheckCircle} />
+            <ActionCard title="Create Quiz" to="/lecturer/quizzes/create" description="Combine questions into quizzes." icon={CheckCircle} />
+            <ActionCard title="Launch Live Room" to="/lecturer/rooms/create" description="Start a synchronous quiz session." icon={Presentation} />
           </div>
         </section>
 

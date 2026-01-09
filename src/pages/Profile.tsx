@@ -10,44 +10,15 @@ import {
 
 import { clearProfile } from "../store/profile/profileSlice";
 import { logout } from "../store/auth/authSlice";
-
-// --- Icons ---
-// 1. ADDED: ArrowLeftIcon for the back button
-const ArrowLeftIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-  </svg>
-);
-
-const UserIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-  </svg>
-);
-
-const LockClosedIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-  </svg>
-);
-
-const KeyIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
-    </svg>
-);
-
-const BadgeCheckIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-blue-500">
-        <path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-    </svg>
-);
+import { 
+  ArrowLeft, 
+  User, 
+  Mail, 
+  Lock, 
+  Key, 
+  BadgeCheck, 
+  Loader2 
+} from "lucide-react";
 
 export default function Profile() {
   const dispatch = useAppDispatch();
@@ -162,7 +133,7 @@ export default function Profile() {
             className="group flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors mb-6 font-medium"
         >
             <div className="p-1.5 rounded-lg bg-white border border-gray-200 group-hover:border-gray-300 shadow-sm transition-all">
-                <ArrowLeftIcon />
+                <ArrowLeft size={20} />
             </div>
             <span>Back to Dashboard</span>
         </button>
@@ -183,7 +154,7 @@ export default function Profile() {
                             {initials}
                         </div>
                         <div className="absolute bottom-4 right-0 bg-white rounded-full p-1 shadow-sm">
-                            <BadgeCheckIcon />
+                            <BadgeCheck className="w-5 h-5 text-blue-500" fill="currentColor" color="white" />
                         </div>
                     </div>
                     
@@ -218,7 +189,7 @@ export default function Profile() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-                            <UserIcon />
+                            <User size={20} />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900">Personal Information</h3>
                     </div>
@@ -229,7 +200,7 @@ export default function Profile() {
                                 <label className="text-sm font-semibold text-gray-700">Full Name</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <UserIcon />
+                                        <User size={20} />
                                     </div>
                                     <input
                                         value={name}
@@ -244,7 +215,7 @@ export default function Profile() {
                                 <label className="text-sm font-semibold text-gray-700">Email Address</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                        <MailIcon />
+                                        <Mail size={20} />
                                     </div>
                                     <input
                                         value={email}
@@ -264,10 +235,7 @@ export default function Profile() {
                             >
                                 {isUpdating ? (
                                     <>
-                                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
+                                        <Loader2 className="animate-spin h-4 w-4 text-white" />
                                         Saving...
                                     </>
                                 ) : "Save Changes"}
@@ -280,7 +248,7 @@ export default function Profile() {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                     <div className="flex items-center gap-3 mb-6">
                          <div className="p-2 bg-red-50 text-red-600 rounded-lg">
-                            <LockClosedIcon />
+                            <Lock size={20} />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900">Security</h3>
                     </div>
@@ -295,7 +263,7 @@ export default function Profile() {
                             <label className="text-sm font-semibold text-gray-700">Current Password</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <KeyIcon />
+                                    <Key size={20} />
                                 </div>
                                 <input
                                     type="password"
@@ -311,7 +279,7 @@ export default function Profile() {
                             <label className="text-sm font-semibold text-gray-700">New Password</label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                                    <LockClosedIcon />
+                                    <Lock size={20} />
                                 </div>
                                 <input
                                     type="password"
@@ -331,10 +299,7 @@ export default function Profile() {
                             >
                                  {isChangingPwd ? (
                                     <>
-                                        <svg className="animate-spin h-4 w-4 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
+                                        <Loader2 className="animate-spin h-4 w-4 text-red-600" />
                                         Updating...
                                     </>
                                 ) : "Update Password"}

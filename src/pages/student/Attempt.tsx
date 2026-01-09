@@ -1,19 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
-
-// --- Icons ---
-const ClockIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-  </svg>
-);
-
-const CheckCircleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-indigo-600">
-    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-  </svg>
-);
+import { Clock, CheckCircle } from "lucide-react";
 
 // --- Helper: Format Seconds ---
 const formatTime = (seconds: number) => {
@@ -131,7 +119,7 @@ export default function Attempt() {
             <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-mono font-bold text-sm transition-colors ${
                 isUrgent ? "bg-red-100 text-red-600 animate-pulse" : "bg-black text-white"
             }`}>
-                <ClockIcon />
+                <Clock size={16} />
                 {formatTime(remaining)}
             </div>
         </div>
@@ -194,7 +182,7 @@ export default function Attempt() {
                     {/* Checkmark Icon for selected state */}
                     {isSelected && (
                         <div className="absolute right-4 animate-in fade-in zoom-in duration-200">
-                            <CheckCircleIcon />
+                            <CheckCircle className="w-6 h-6 text-indigo-600" />
                         </div>
                     )}
                   </label>
