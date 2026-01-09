@@ -52,9 +52,12 @@ The platform emphasizes real-time interaction, intelligent learning tools, and s
 | **TypeScript**    | 5.9.3   | Type-safe JavaScript for robust code            |
 | **Vite**          | 7.2.4   | Next-generation frontend build tool             |
 | **Redux Toolkit** | 2.11.2  | Predictable state management                    |
+| **React Redux**   | 9.2.0   | React bindings for Redux                        |
 | **TailwindCSS**   | 4.1.17  | Utility-first CSS framework                     |
 | **React Router**  | 7.9.6   | Declarative routing for React                   |
 | **Axios**         | 1.13.2  | Promise-based HTTP client                       |
+| **Lucide React**  | 0.562.0 | Icon library for React                          |
+| **Sonner**        | 2.0.7   | Toast notifications library                     |
 | **ESLint**        | 9.39.1  | Code quality and consistency                    |
 
 ### Backend Stack
