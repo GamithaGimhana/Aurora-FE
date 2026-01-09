@@ -113,27 +113,27 @@ function Footer() {
           <div>
             <h5 className="font-semibold mb-4">Product</h5>
             <ul className="space-y-2 text-sm text-gray-500">
-              <li><Link to="#" className="hover:text-black">Features</Link></li>
-              <li><Link to="#" className="hover:text-black">Pricing</Link></li>
-              <li><Link to="#" className="hover:text-black">Updates</Link></li>
+              <li><Link to="/info/product/features" className="hover:text-black transition-colors">Features</Link></li>
+              <li><Link to="/info/product/pricing" className="hover:text-black transition-colors">Pricing</Link></li>
+              <li><Link to="/info/product/updates" className="hover:text-black transition-colors">Updates</Link></li>
             </ul>
           </div>
 
           <div>
             <h5 className="font-semibold mb-4">Resources</h5>
             <ul className="space-y-2 text-sm text-gray-500">
-              <li><Link to="#" className="hover:text-black">Community</Link></li>
-              <li><Link to="#" className="hover:text-black">Help Center</Link></li>
-              <li><Link to="#" className="hover:text-black">Guides</Link></li>
+              <li><Link to="/info/resources/community" className="hover:text-black transition-colors">Community</Link></li>
+              <li><Link to="/info/resources/help" className="hover:text-black transition-colors">Help Center</Link></li>
+              <li><Link to="/info/resources/guides" className="hover:text-black transition-colors">Guides</Link></li>
             </ul>
           </div>
 
           <div>
             <h5 className="font-semibold mb-4">Legal</h5>
             <ul className="space-y-2 text-sm text-gray-500">
-              <li><Link to="#" className="hover:text-black">Privacy</Link></li>
-              <li><Link to="#" className="hover:text-black">Terms</Link></li>
-              <li><Link to="#" className="hover:text-black">Security</Link></li>
+              <li><Link to="/info/legal/privacy" className="hover:text-black transition-colors">Privacy</Link></li>
+              <li><Link to="/info/legal/terms" className="hover:text-black transition-colors">Terms</Link></li>
+              <li><Link to="/info/legal/security" className="hover:text-black transition-colors">Security</Link></li>
             </ul>
           </div>
         </div>
