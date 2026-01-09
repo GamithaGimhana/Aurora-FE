@@ -86,7 +86,6 @@ export default function FlashcardStudy() {
     setFlipped(false);
     setCards([...cards].sort(() => Math.random() - 0.5));
     setIndex(0);
-    // Optional: Toast for feedback
     toast.success("Deck Shuffled", { duration: 2000 }); 
   };
 

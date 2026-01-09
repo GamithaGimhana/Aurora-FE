@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-import { toast } from "sonner"; // 1. Import toast (No Toaster needed if parent has one)
+import { toast } from "sonner"; // 1. Import toast
 import { Search, CheckCircle, PlusCircle } from "lucide-react";
 
 interface Question {

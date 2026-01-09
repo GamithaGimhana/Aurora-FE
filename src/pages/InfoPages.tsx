@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 
 // --- CONTENT DATABASE ---
-// We can use toast() directly inside this object since Sonner manages state globally
 const CONTENT: any = {
   product: {
     label: "Product",

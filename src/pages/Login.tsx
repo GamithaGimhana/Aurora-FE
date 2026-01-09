@@ -35,7 +35,7 @@ export default function Login() {
 
         const roles = result.role;
 
-        // 4. Success Toast (Optional, as redirection is usually enough)
+        // 4. Success Toast
         toast.success(`Welcome back, ${result.name}!`);
 
         if (roles.includes("ADMIN")) {

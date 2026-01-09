@@ -153,7 +153,6 @@ export default function LecturerDashboard() {
 
       } catch (err) {
         console.error("Failed to load dashboard stats", err);
-        // 3. Optional: Add a subtle toast if data completely fails
         toast.error("Data Sync Error", { description: "Some dashboard metrics could not be loaded." });
       } finally {
         setLoading(false);

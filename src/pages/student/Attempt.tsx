@@ -52,8 +52,6 @@ export default function Attempt() {
     if (remaining <= 0) return;
     const t = setInterval(() => setRemaining((r) => r - 1), 1000);
     
-    // Auto-submit logic could go here if remaining === 0
-    
     return () => clearInterval(t);
   }, [remaining]);
 
