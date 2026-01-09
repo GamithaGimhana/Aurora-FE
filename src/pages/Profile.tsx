@@ -10,6 +10,7 @@ import {
 
 import { clearProfile } from "../store/profile/profileSlice";
 import { logout } from "../store/auth/authSlice";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ArrowLeft, 
   User, 
@@ -65,27 +66,67 @@ export default function Profile() {
 
   const handleUpdate = async () => {
     setIsUpdating(true);
-    await dispatch(updateProfileThunk({ name, email }));
-    setIsUpdating(false);
+    // 2. Profile Update Promise Toast
+    const promise = dispatch(updateProfileThunk({ name, email })).unwrap();
+    
+    toast.promise(promise, {
+        loading: 'Updating profile...',
+        success: 'Profile details updated successfully',
+        error: 'Failed to update profile',
+    });
+
+    try {
+        await promise;
+    } finally {
+        setIsUpdating(false);
+    }
   };
 
   const handleChangePassword = async () => {
     if(!currentPassword || !newPassword) return;
 
+    // 3. Custom Confirmation Toast for Password Change
+    toast("Change your password?", {
+        description: "You will be logged out of all active sessions.",
+        action: {
+            label: "Confirm Change",
+            onClick: () => processPasswordChange()
+        },
+        cancel: {
+            label: "Cancel",
+            onClick: () => {}
+        }
+    });
+  };
+
+  const processPasswordChange = async () => {
     setIsChangingPwd(true);
-    const result = await dispatch(
-      changePasswordThunk({ currentPassword, newPassword })
-    );
-    setIsChangingPwd(false);
+    
+    try {
+        const result = await dispatch(
+            changePasswordThunk({ currentPassword, newPassword })
+        );
 
-    if (changePasswordThunk.fulfilled.match(result)) {
-      alert("Success! Your password has been changed. Please log in again.");
+        if (changePasswordThunk.fulfilled.match(result)) {
+            // 4. Success Toast before redirect
+            toast.success("Password Changed", { 
+                description: "Redirecting to login..." 
+            });
 
-      dispatch(clearProfile());
-      dispatch(logout());
-      localStorage.clear();
-
-      navigate("/login");
+            setTimeout(() => {
+                dispatch(clearProfile());
+                dispatch(logout());
+                localStorage.clear();
+                navigate("/login");
+            }, 1500);
+        } else {
+             // Handle reject from Thunk
+             toast.error("Update Failed", { description: "Incorrect current password." });
+        }
+    } catch (err) {
+        toast.error("Error", { description: "Something went wrong." });
+    } finally {
+        setIsChangingPwd(false);
     }
   };
 
@@ -131,6 +172,10 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 py-10 px-4 sm:px-6">
+      
+      {/* 5. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       <div className="max-w-5xl mx-auto">
         
         {/* Back Button UI */}

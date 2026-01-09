@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFlashcard } from "../services/flashcards";
 import { useNavigate, Link } from "react-router-dom";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   Tag, 
@@ -20,40 +21,36 @@ export default function FlashcardsCreate() {
   const handleCreate = async (e: any) => {
     e.preventDefault();
 
+    // 2. Validation Toast
     if (!front.trim() || !back.trim() || !topic.trim()) {
-      alert("All fields are required");
+      toast.error("Incomplete Card", { description: "Please fill in the topic, question (front), and answer (back)." });
       return;
     }
 
     setLoading(true);
-    try {
-      const res = await createFlashcard({ front, back, topic });
 
-      if (res?.message) {
-        console.log(res.message);
-      }
-      // success — backend response available in res
-      navigate("/flashcards");
-    } catch (err: any) {
-      // show better error info
-      console.error("Create flashcard error:", err);
+    // 3. Create Promise Toast
+    const createPromise = createFlashcard({ front, back, topic });
 
-      // axios error shape
-      const serverMsg =
-        err?.response?.data?.message ||
-        err?.response?.data ||
-        err?.message ||
-        "Failed to create flashcard";
-
-      alert(`Error: ${serverMsg}`);
-    } finally {
-      setLoading(false);
-    }
+    toast.promise(createPromise, {
+        loading: 'Saving flashcard...',
+        success: () => {
+            navigate("/flashcards");
+            return "Flashcard created successfully!";
+        },
+        error: (err) => {
+            setLoading(false);
+            return err?.response?.data?.message || err?.message || "Failed to create flashcard";
+        }
+    });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center gap-4">

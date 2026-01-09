@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { toast } from "sonner"; // 1. Import toast (No Toaster needed if parent has one)
 import { Search, CheckCircle, PlusCircle } from "lucide-react";
 
 interface Question {
@@ -25,7 +26,10 @@ export default function QuestionBank({
         const res = await api.get("/questions/me");
         setQuestions(res.data.data || []);
       } catch (err) {
-        console.error("Failed to load question bank");
+        // 2. Replace console.error with user-facing toast
+        toast.error("Library Error", { 
+            description: "Failed to load your question bank." 
+        });
       } finally {
         setLoading(false);
       }

@@ -7,6 +7,7 @@ import {
   deleteUserThunk,
 } from "../../store/adminUsers/adminUsersThunks";
 import type { Role } from "../../store/auth/authTypes";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Trash2, 
   Search, 
@@ -28,14 +29,43 @@ export default function AdminUsers() {
     dispatch(fetchAdminUsersThunk());
   }, [dispatch]);
 
+  // 2. Watch for Global Errors
+  useEffect(() => {
+    if (error) {
+      toast.error("Operation Failed", { description: error });
+    }
+  }, [error]);
+
+  // 3. Update Role with Promise Feedback
   const changeRole = (id: string, role: Role) => {
-    // Optimistic UI could be implemented here, but standard dispatch for now
-    dispatch(updateUserRoleThunk({ userId: id, role: [role] }));
+    const promise = dispatch(updateUserRoleThunk({ userId: id, role: [role] })).unwrap();
+    
+    toast.promise(promise, {
+      loading: 'Updating permissions...',
+      success: () => `User role changed to ${role}`, // Dynamic success message
+      error: 'Failed to update user role',
+    });
   };
 
-  const deleteUser = (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this user?")) return;
-    dispatch(deleteUserThunk(id));
+  // 4. Delete User with Confirmation & Feedback
+const deleteUser = (id: string) => {
+    toast("Delete this user permanently?", {
+      description: "This action cannot be undone.",
+      action: {
+        label: "Delete",
+        onClick: () => {
+             toast.promise(dispatch(deleteUserThunk(id)).unwrap(), {
+                 loading: 'Deleting user...',
+                 success: 'User has been removed',
+                 error: 'Could not delete user'
+             });
+        }
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {}, 
+      },
+    });
   };
 
   // Stats Calculation
@@ -58,6 +88,10 @@ export default function AdminUsers() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900 p-6 md:p-10">
+      
+      {/* 5. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}
@@ -74,12 +108,7 @@ export default function AdminUsers() {
             </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 shadow-sm">
-            <strong className="font-semibold">Error:</strong> {error}
-        </div>
-        )}
+        {/* Removed the old static Error Message block since Toaster handles it now */}
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -186,7 +215,7 @@ export default function AdminUsers() {
                                 const isAdmin = u.role.includes("ADMIN");
                                 const isLecturer = u.role.includes("LECTURER");
                                 
-                                // Dynamic background for avatars based on email length (pseudo-random)
+                                // Dynamic background for avatars based on email length
                                 const colors = ["bg-red-100 text-red-600", "bg-blue-100 text-blue-600", "bg-green-100 text-green-600", "bg-yellow-100 text-yellow-600", "bg-purple-100 text-purple-600", "bg-pink-100 text-pink-600"];
                                 const avatarColor = colors[u.email.length % colors.length];
 
@@ -221,7 +250,6 @@ export default function AdminUsers() {
                                                     <option value="LECTURER">Lecturer</option>
                                                     {isAdmin && <option value="ADMIN">Admin</option>}
                                                 </select>
-                                                {/* Custom Arrow for select */}
                                                 {!isAdmin && (
                                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
                                                         <ChevronDown size={12} strokeWidth={3} />
@@ -230,7 +258,6 @@ export default function AdminUsers() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-500">
-                                            {/* Assuming createdAt exists, otherwise placeholder */}
                                             {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "Unknown"}
                                         </td>
                                         <td className="px-6 py-4 text-right">

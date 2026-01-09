@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../services/api";
 import { downloadAttemptReport } from "../../services/attempts";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   CheckCircle, 
@@ -28,15 +29,40 @@ export default function AttemptResult() {
     const load = async () => {
       try {
         const res = await api.get(`/attempts/${attemptId}`);
-        setAttempt(res.data.data || res.data); // Handle wrapper if needed
+        setAttempt(res.data.data || res.data); 
       } catch {
-        alert("Failed to load result");
+        // 2. Load Error Toast
+        toast.error("Result Error", { description: "Failed to load your result summary." });
       } finally {
         setLoading(false);
       }
     };
     load();
   }, [attemptId]);
+
+  // 3. Handle PDF Download with Promise Toast
+  const handleDownload = async () => {
+    setDownloading(true);
+
+    const downloadTask = async () => {
+        const blob = await downloadAttemptReport(attempt._id);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `attempt-${attempt._id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    };
+
+    toast.promise(downloadTask(), {
+        loading: 'Generating PDF report...',
+        success: 'Report downloaded successfully',
+        error: 'Failed to download report',
+        finally: () => setDownloading(false)
+    });
+  };
 
   if (loading) {
       return (
@@ -59,6 +85,9 @@ export default function AttemptResult() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center gap-4">
@@ -171,26 +200,8 @@ export default function AttemptResult() {
              {/* Download PDF Button */}
             <button
                 disabled={downloading}
-                onClick={async () => {
-                    try {
-                    setDownloading(true);
-                    const blob = await downloadAttemptReport(attempt._id);
-                    const url = window.URL.createObjectURL(blob);
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = `attempt-${attempt._id}.pdf`;
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    window.URL.revokeObjectURL(url);
-                    } catch (err) {
-                    console.error(err);
-                    alert("Failed to download PDF");
-                    } finally { 
-                    setDownloading(false); 
-                    }
-                }}
-                className="w-full sm:w-auto mx-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95"
+                onClick={handleDownload}
+                className="w-full sm:w-auto mx-auto inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
             >
                 <Download size={20} />
                 {downloading ? "Downloading..." : "Download Report"}

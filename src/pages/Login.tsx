@@ -3,12 +3,13 @@ import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { loginThunk } from "../store/auth/authThunks";
-import { Mail, Lock, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
+import { Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth); // Removed 'error' from selector
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,27 +19,48 @@ export default function Login() {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
+    // 2. Validation Toast
     if (!email || !password) {
+      toast.error("Missing Credentials", { 
+          description: "Please enter both your email and password." 
+      });
       return;
     }
 
-    const result = await dispatch(
-        loginThunk({ email, password })
-      ).unwrap();
+    try {
+        // 3. Dispatch Thunk
+        const result = await dispatch(
+            loginThunk({ email, password })
+        ).unwrap();
 
-      const roles = result.role;
+        const roles = result.role;
 
-      if (roles.includes("ADMIN")) {
-        navigate("/admin/dashboard");
-      } else if (roles.includes("LECTURER")) {
-        navigate("/lecturer/dashboard");
-      } else {
-        navigate("/student/dashboard");
-      }
+        // 4. Success Toast (Optional, as redirection is usually enough)
+        toast.success(`Welcome back, ${result.name}!`);
+
+        if (roles.includes("ADMIN")) {
+            navigate("/admin/dashboard");
+        } else if (roles.includes("LECTURER")) {
+            navigate("/lecturer/dashboard");
+        } else {
+            navigate("/student/dashboard");
+        }
+    } catch (err: any) {
+        // 5. Error Toast
+        // Redux Toolkit often puts the error message in err.message or just err string if rejected manually
+        const errorMessage = typeof err === 'string' ? err : (err.message || "Invalid email or password.");
+        toast.error("Login Failed", { 
+            description: errorMessage 
+        });
+    }
   };
 
   return (
     <div className="min-h-screen flex bg-white font-sans text-gray-900">
+      
+      {/* 6. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* --- Left Side - Image Banner (Hidden on mobile) --- */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10" />
@@ -76,13 +98,6 @@ export default function Login() {
               Please enter your details to sign in.
             </p>
           </div>
-
-          {error && (
-            <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 shrink-0" />
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Input with Icon */}

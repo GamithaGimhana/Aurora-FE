@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../services/api"; 
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { Trophy, ChevronLeft } from "lucide-react";
 
 // --- Helper for Rank Styling ---
@@ -26,6 +27,11 @@ export default function StudentLeaderboard() {
       try {
         const res = await api.get(`/attempts/room/${roomId}`);
         setData(res.data.data);
+      } catch (err) {
+        // 2. Error Handling Toast
+        toast.error("Data Unavailable", { 
+            description: "Could not load the leaderboard rankings." 
+        });
       } finally {
         setLoading(false);
       }
@@ -36,6 +42,9 @@ export default function StudentLeaderboard() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-900 pb-20">
       
+      {/* 3. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* Header / Nav */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
         <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-4">
@@ -129,7 +138,6 @@ export default function StudentLeaderboard() {
                                         </p>
                                         {!isMe && (
                                             <p className="text-[10px] text-gray-400 truncate">
-                                                {/* Mask email for privacy */}
                                                 Student
                                             </p>
                                         )}

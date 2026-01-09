@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../services/api";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { Trophy, ChevronLeft, Clock } from "lucide-react";
 
 // --- Helper for Rank Styling ---
@@ -31,7 +32,10 @@ export default function RoomLeaderboard() {
         
         setData(ranked);
       } catch {
-        alert("Failed to load leaderboard");
+        // 2. Fetch Error Toast
+        toast.error("Data Fetch Error", { 
+            description: "Failed to load session results." 
+        });
       } finally {
         setLoading(false);
       }
@@ -42,6 +46,9 @@ export default function RoomLeaderboard() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 3. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center gap-4">

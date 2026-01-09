@@ -1,47 +1,57 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Ticket, 
   ChevronLeft, 
   ArrowRight, 
-  AlertCircle, 
   Loader2 
 } from "lucide-react";
 
 export default function JoinRoom() {
   const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // Removed explicit 'error' state in favor of toast
   const navigate = useNavigate();
 
   const joinRoom = async () => {
-    setError("");
-
-    if (!roomCode.trim()) {
-      setError("Please enter a valid room code.");
+    // 2. Validation Toast
+    if (!roomCode.trim() || roomCode.length < 4) {
+      toast.error("Invalid Code", { 
+          description: "Please enter a valid 6-character room PIN." 
+      });
       return;
     }
 
     setLoading(true);
-    try {
-      const res = await api.post("/rooms/join", {
-        roomCode: roomCode.trim().toUpperCase(),
-      });
 
-      const roomId = res.data.data.roomId;
-      navigate(`/student/rooms/${roomId}`);
-    } catch (err: any) {
-      console.error(err);
-      setError(err.response?.data?.message || "Invalid room code or room is closed.");
-    } finally {
-      setLoading(false);
-    }
+    // 3. Connection Promise
+    const connectPromise = api.post("/rooms/join", {
+        roomCode: roomCode.trim().toUpperCase(),
+    });
+
+    toast.promise(connectPromise, {
+        loading: 'Verifying room code...',
+        success: (res) => {
+            const roomId = res.data.data.roomId;
+            // Small delay to let user see success message before redirect
+            setTimeout(() => navigate(`/student/rooms/${roomId}`), 500);
+            return "Room found! Joining session...";
+        },
+        error: (err) => {
+            setLoading(false);
+            return err.response?.data?.message || "Room not found or closed.";
+        }
+    });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 relative overflow-hidden">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* Background Decor */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-100 rounded-full blur-3xl opacity-50"></div>
@@ -78,21 +88,12 @@ export default function JoinRoom() {
                         type="text"
                         placeholder="000000"
                         value={roomCode}
-                        onChange={(e) => {
-                            setRoomCode(e.target.value.toUpperCase());
-                            setError("");
-                        }}
+                        onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
                         maxLength={6}
-                        className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-4xl font-bold text-center tracking-[0.25em] py-5 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder-gray-300 uppercase font-mono"
+                        disabled={loading}
+                        className="w-full bg-gray-50 border border-gray-200 text-gray-900 text-4xl font-bold text-center tracking-[0.25em] py-5 rounded-2xl focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder-gray-300 uppercase font-mono disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                 </div>
-
-                {error && (
-                    <div className="bg-red-50 text-red-600 text-sm font-medium py-3 px-4 rounded-xl border border-red-100 flex items-center justify-center gap-2 animate-pulse">
-                        <AlertCircle size={16} />
-                        {error}
-                    </div>
-                )}
 
                 <button
                     onClick={joinRoom}

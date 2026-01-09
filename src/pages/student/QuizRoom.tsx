@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import { getRoomById, startQuiz } from "../../services/quizRoom"; 
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   Clock, 
@@ -49,7 +50,10 @@ export default function QuizRoom() {
          setAccessDenied(true);
          setError(err.response.data.message || "Access Restricted");
       } else {
-        setError(err.response?.data?.message || "Failed to load room details.");
+         const msg = err.response?.data?.message || "Failed to load room details.";
+         setError(msg);
+         // 2. Load Error Toast
+         toast.error("Connection Error", { description: msg });
       }
     } finally {
       setLoading(false);
@@ -65,20 +69,30 @@ export default function QuizRoom() {
   const handleStartQuiz = async () => {
     setStarting(true);
     setError("");
-    try {
-      const res = await startQuiz(roomId!); 
-      const payload = res.data;
-      const attemptId = payload.attempt?._id || payload.attempt?.id || payload.data?.attempt?._id;
-      navigate(`/student/attempt/${attemptId}`);
-    } catch (err: any) {
-      const msg = err.response?.data?.message || "Failed to start quiz.";
-      setError(msg);
-      setStarting(false);
-      // If error suggests room is closed/limited, reload to update UI
-      if (err.response?.status === 403 || err.response?.status === 400) {
-         loadRoom(); 
-      }
-    }
+    
+    // 3. Start Quiz Promise Toast
+    const startPromise = startQuiz(roomId!);
+
+    toast.promise(startPromise, {
+        loading: 'Initializing quiz environment...',
+        success: (res) => {
+             const payload = res.data;
+             const attemptId = payload.attempt?._id || payload.attempt?.id || payload.data?.attempt?._id;
+             // Delay navigation slightly to show success
+             setTimeout(() => navigate(`/student/attempt/${attemptId}`), 500);
+             return "Quiz started! Good luck.";
+        },
+        error: (err) => {
+             setStarting(false);
+             const msg = err.response?.data?.message || "Failed to start quiz.";
+             
+             // If error suggests room is closed/limited, reload to update UI
+             if (err.response?.status === 403 || err.response?.status === 400) {
+                loadRoom(); 
+             }
+             return msg;
+        }
+    });
   };
 
   // --- Render: Loading ---
@@ -143,6 +157,9 @@ export default function QuizRoom() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 relative">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* Back Button */}
       <div className="absolute top-6 left-6 md:left-12 z-20">
         <Link to="/student/rooms/available" className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur rounded-full shadow-sm text-gray-600 hover:text-gray-900 transition font-medium">
@@ -169,7 +186,7 @@ export default function QuizRoom() {
                         </div>
                     </div>
                     
-                    {/* NEW: Leaderboard Icon Link */}
+                    {/* Leaderboard Icon Link */}
                     <Link 
                         to={`/student/rooms/${roomId}/leaderboard`} 
                         className="bg-white/20 backdrop-blur-md p-2 rounded-full hover:bg-white/30 transition border border-white/10"
@@ -293,7 +310,7 @@ export default function QuizRoom() {
                 </>
             )}
             
-            {/* NEW: Explicit Leaderboard Link Button at Bottom */}
+            {/* Explicit Leaderboard Link Button at Bottom */}
             <Link 
                 to={`/student/rooms/${roomId}/leaderboard`}
                 className="mt-4 w-full flex items-center justify-center gap-2 py-3 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:text-indigo-600 transition shadow-sm group"

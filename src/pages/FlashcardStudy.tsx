@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getMyFlashcards } from "../services/flashcards";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -32,7 +33,10 @@ export default function FlashcardStudy() {
         const res = await getMyFlashcards({ page: 1, limit: 100, topic: topic || undefined });
         setCards(res.data || []);
       } catch {
-        alert("Failed to load flashcards");
+        // 2. Fetch Error Toast
+        toast.error("Deck Error", { 
+            description: "Failed to load flashcards. Please refresh." 
+        });
       } finally {
         setLoading(false);
       }
@@ -82,10 +86,15 @@ export default function FlashcardStudy() {
     setFlipped(false);
     setCards([...cards].sort(() => Math.random() - 0.5));
     setIndex(0);
+    // Optional: Toast for feedback
+    toast.success("Deck Shuffled", { duration: 2000 }); 
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8 font-sans">
+
+      {/* 3. Toaster Component */}
+      <Toaster position="top-center" richColors />
 
       <div className="w-full max-w-2xl space-y-8">
         

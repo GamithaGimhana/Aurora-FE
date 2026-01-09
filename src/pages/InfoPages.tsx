@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Shield, 
   FileText, 
@@ -15,10 +16,12 @@ import {
   X,
   CheckCircle2,
   ExternalLink,
-  ArrowRight
+  ArrowRight,
+  Copy
 } from "lucide-react";
 
-// --- CONTENT DATABASE (Redesigned to match Welcome Page Aesthetics) ---
+// --- CONTENT DATABASE ---
+// We can use toast() directly inside this object since Sonner manages state globally
 const CONTENT: any = {
   product: {
     label: "Product",
@@ -72,7 +75,12 @@ const CONTENT: any = {
                       </li>
                   ))}
               </ul>
-              <button className="w-full py-4 rounded-xl border border-gray-200 text-gray-900 font-bold text-sm hover:bg-gray-50 transition-colors">Current Plan</button>
+              <button 
+                onClick={() => toast.info("Active Plan", { description: "You are currently on the Student Basic plan." })}
+                className="w-full py-4 rounded-xl border border-gray-200 text-gray-900 font-bold text-sm hover:bg-gray-50 transition-colors"
+              >
+                Current Plan
+              </button>
             </div>
 
             {/* Pro Plan */}
@@ -91,7 +99,12 @@ const CONTENT: any = {
                       </li>
                   ))}
               </ul>
-              <button className="w-full py-4 rounded-xl bg-white text-black font-bold text-sm hover:bg-gray-100 transition-colors shadow-lg">Upgrade Now</button>
+              <button 
+                onClick={() => toast.success("Redirecting...", { description: "Taking you to the secure payment gateway." })}
+                className="w-full py-4 rounded-xl bg-white text-black font-bold text-sm hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                Upgrade Now
+              </button>
             </div>
           </div>
         )
@@ -150,8 +163,18 @@ const CONTENT: any = {
                     Connect with thousands of students and educators sharing decks, quiz ideas, and study tips.
                 </p>
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <button className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/20">Discord Server</button>
-                    <button className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:bg-gray-100 transition shadow-lg">Forum</button>
+                    <button 
+                        onClick={() => toast.success("Invite Copied", { description: "Discord invite link copied to clipboard." })}
+                        className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-500 transition shadow-lg shadow-indigo-900/20"
+                    >
+                        Discord Server
+                    </button>
+                    <button 
+                        onClick={() => toast("External Link", { description: "Opening community forums..." })}
+                        className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:bg-gray-100 transition shadow-lg"
+                    >
+                        Forum
+                    </button>
                 </div>
             </div>
           </div>
@@ -162,16 +185,22 @@ const CONTENT: any = {
         icon: HelpCircle,
         content: (
           <div className="grid sm:grid-cols-2 gap-6">
-             <a href="mailto:support@auroralms.io" className="block p-8 rounded-2xl border border-gray-200 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 group bg-white">
+             <div 
+                onClick={() => {
+                    navigator.clipboard.writeText("support@auroralms.io");
+                    toast.success("Email Copied", { description: "support@auroralms.io copied to clipboard" });
+                }}
+                className="cursor-pointer block p-8 rounded-2xl border border-gray-200 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 group bg-white"
+             >
                 <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                     <Zap size={24} />
                 </div>
                 <h4 className="font-bold text-gray-900 text-lg mb-2">Email Support</h4>
                 <p className="text-sm text-gray-500 leading-relaxed">Get a response within 24 hours directly from our team.</p>
                 <div className="mt-6 flex items-center text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
-                    support@auroralms.io <ArrowRight className="ml-2 w-4 h-4" />
+                    support@auroralms.io <Copy className="ml-2 w-4 h-4" />
                 </div>
-             </a>
+             </div>
              <div className="block p-8 rounded-2xl border border-gray-200 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white">
                 <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6">
                     <Shield size={24} />
@@ -377,6 +406,9 @@ export default function InfoPages() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-indigo-100 selection:text-indigo-900 flex flex-col md:flex-row">
       
+      {/* 2. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* --- MOBILE HEADER --- */}
       <div className="md:hidden sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex justify-between items-center">
         <Link to="/" className="font-bold text-lg flex items-center gap-2 tracking-tight">

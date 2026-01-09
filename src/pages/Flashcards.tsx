@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMyFlashcards, deleteFlashcard } from "../services/flashcards";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Plus, 
   Play, 
@@ -66,6 +67,9 @@ export default function Flashcards() {
         new Set(list.map((c) => c.topic))
       );
       setTopics(uniqueTopics);
+    } catch (err) {
+        // 2. Fetch Error Toast
+        toast.error("Sync Error", { description: "Failed to load flashcards." });
     } finally {
       setLoading(false);
     }
@@ -75,10 +79,30 @@ export default function Flashcards() {
     fetchCards();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this flashcard?")) return;
-    await deleteFlashcard(id);
-    fetchCards(page, selectedTopic || undefined);
+  // 3. Custom Delete Confirmation & Promise Toast
+  const handleDelete = (id: string) => {
+    toast("Delete this flashcard?", {
+        description: "This action cannot be undone.",
+        action: {
+            label: "Delete",
+            onClick: async () => {
+                const deletePromise = deleteFlashcard(id);
+                
+                toast.promise(deletePromise, {
+                    loading: 'Deleting...',
+                    success: () => {
+                        fetchCards(page, selectedTopic || undefined);
+                        return "Flashcard deleted";
+                    },
+                    error: "Failed to delete flashcard"
+                });
+            }
+        },
+        cancel: {
+            label: "Cancel",
+            onClick: () => {}
+        }
+    });
   };
 
   const handleTopicChange = (value: string) => {
@@ -88,6 +112,10 @@ export default function Flashcards() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900">
+      
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       <div className="max-w-7xl mx-auto px-6 py-12">
         
         {/* Header Section */}

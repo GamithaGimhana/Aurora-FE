@@ -1,6 +1,7 @@
 import { type FormEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   Plus, 
@@ -35,31 +36,49 @@ export default function CreateQuestion() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    // 2. Validation Toast
     if (!question.trim() || !answer.trim() || options.some((o) => !o.trim())) {
-      return alert("All fields must be filled, at least 2 options.");
+      toast.error("Incomplete Form", {
+        description: "Please fill in the question, answer, and at least 2 options."
+      });
+      return;
     }
 
     setLoading(true);
-    try {
-      await api.post("/questions/create", {
+
+    // 3. API Promise Toast
+    const createPromise = api.post("/questions/create", {
         question: question.trim(),
         options: options.map((o) => o.trim()),
         answer: answer.trim(),
         topic: topic.trim() || undefined,
-      });
+    });
 
-      navigate("/lecturer/questions"); // go to list page
+    toast.promise(createPromise, {
+        loading: 'Creating question...',
+        success: () => {
+            navigate("/lecturer/questions"); 
+            return "Question added successfully";
+        },
+        error: "Failed to create question",
+    });
+
+    try {
+        await createPromise;
     } catch (err) {
-      console.error(err);
-      alert("Failed to create question");
+        console.error(err);
+        // Error is handled by toast.promise above
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center gap-4">
@@ -161,7 +180,7 @@ export default function CreateQuestion() {
                     type="text"
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
-                    className="w-full bg-white border-green-200 text-green-900 font-medium rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition-all placeholder-green-700/30"
+                    className="w-full bg-white border-green-200 text-green-900 font-medium rounded-lg px-4 py-3 focus:ring-2 focus:green-500 focus:border-transparent outline-none transition-all placeholder-green-700/30"
                     placeholder="Paste the correct answer exactly as written above"
                     required
                 />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { Link } from "react-router-dom";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Plus, 
   Clock, 
@@ -22,7 +23,8 @@ export default function LecturerRooms() {
         const res = await api.get("/rooms/me");
         setRooms(res.data.data || res.data);
       } catch {
-        alert("Failed to load rooms");
+        // 2. Initial Load Error
+        toast.error("Network Error", { description: "Could not fetch your active rooms." });
       } finally {
         setLoading(false);
       }
@@ -31,47 +33,62 @@ export default function LecturerRooms() {
 
   const copyCode = (code: string) => {
     navigator.clipboard.writeText(code);
-    alert(`Room code ${code} copied!`);
+    // 3. Success Toast for Copy
+    toast.success("Code Copied!", { 
+        description: `${code} is now in your clipboard.` 
+    });
   };
 
   // --- TOGGLE LOCK HANDLER ---
   const toggleRoom = async (roomId: string, currentStatus: boolean) => {
-    try {
-      // Optimistically update UI
-      setRooms((prev) =>
-        prev.map((r) => (r._id === roomId ? { ...r, active: !currentStatus } : r))
-      );
+      // 4. Toggle Promise Toast
+      const togglePromise = api.patch(`/rooms/${roomId}/toggle`, { active: !currentStatus });
 
-      await api.patch(`/rooms/${roomId}/toggle`, { active: !currentStatus });
-      
-    } catch (err: any) {
-      console.error(err);
-      // Revert change on error
-      setRooms((prev) =>
-        prev.map((r) => (r._id === roomId ? { ...r, active: currentStatus } : r))
-      );
-      alert("Failed to update room status");
-    }
+      toast.promise(togglePromise, {
+          loading: currentStatus ? "Locking room..." : "Unlocking room...",
+          success: () => {
+              // Only update state if API succeeds
+               setRooms((prev) =>
+                prev.map((r) => (r._id === roomId ? { ...r, active: !currentStatus } : r))
+              );
+              return `Room ${currentStatus ? "locked" : "unlocked"} successfully`;
+          },
+          error: "Failed to update room status",
+      });
   };
 
-  const handleDelete = async (roomId: string) => {
-    if (!window.confirm("Are you sure you want to delete this room? This action cannot be undone.")) {
-      return;
-    }
-
-    try {
-      await api.delete(`/rooms/${roomId}`);
-      setRooms((prev) => prev.filter((r) => r._id !== roomId));
-    } catch (err: any) {
-      console.error(err);
-      const errorMessage = err.response?.data?.message || "Failed to delete room";
-      alert(errorMessage);
-    }
+  const handleDelete = (roomId: string) => {
+    // 5. Custom Delete Confirmation Toast
+    toast("Delete this room permanently?", {
+        description: "Student data associated with this session will be lost.",
+        action: {
+            label: "Delete",
+            onClick: async () => {
+                const deletePromise = api.delete(`/rooms/${roomId}`);
+                
+                toast.promise(deletePromise, {
+                    loading: "Deleting room...",
+                    success: () => {
+                        setRooms((prev) => prev.filter((r) => r._id !== roomId));
+                        return "Room deleted successfully";
+                    },
+                    error: (err) => err.response?.data?.message || "Failed to delete room"
+                });
+            }
+        },
+        cancel: {
+            label: "Cancel",
+            onClick: () => {}
+        }
+    });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 6. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -153,7 +170,7 @@ export default function LecturerRooms() {
                                     </span>
                                 </div>
                                 
-                                {/* TOGGLE BUTTON ADDED HERE */}
+                                {/* TOGGLE BUTTON */}
                                 <div className="mt-4 flex justify-center">
                                     <button
                                         onClick={() => toggleRoom(r._id, r.active)}

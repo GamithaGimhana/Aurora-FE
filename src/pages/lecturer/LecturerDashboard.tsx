@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../services/api";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   FileText, 
   Layers, 
@@ -32,7 +33,6 @@ function StatCard({
         </p>
       </div>
       <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>
-        {/* Lucide icons accept className for size and color */}
         <Icon className={`w-8 h-8 ${color.replace("bg-", "text-")}`} />
       </div>
     </div>
@@ -102,18 +102,26 @@ export default function LecturerDashboard() {
   const [loading, setLoading] = useState(true);
   const [rooms, setRooms] = useState<any[]>([]);
 
-  // Function to lock/unlock a room
-  const toggleRoom = async (roomId: string) => {
-    try {
-      const res = await api.patch(`/rooms/${roomId}/toggle`);
-      setRooms(prev =>
-        prev.map(r =>
-          r._id === roomId ? { ...r, active: res.data.active } : r
-        )
-      );
-    } catch {
-      alert("Failed to toggle room status");
-    }
+  // 2. Updated Toggle Logic with Toast Promise
+  const toggleRoom = (roomId: string, currentStatus: boolean) => {
+    // Determine action name for the toast
+    const action = currentStatus ? "Locking" : "Unlocking";
+
+    const promise = api.patch(`/rooms/${roomId}/toggle`);
+
+    toast.promise(promise, {
+      loading: `${action} room...`,
+      success: (res) => {
+        // Update state only on success
+        setRooms(prev =>
+          prev.map(r =>
+            r._id === roomId ? { ...r, active: res.data.active } : r
+          )
+        );
+        return `Room is now ${res.data.active ? "Active" : "Locked"}`;
+      },
+      error: "Failed to update room status",
+    });
   };
 
   useEffect(() => {
@@ -126,7 +134,6 @@ export default function LecturerDashboard() {
           api.get("/rooms/me"),
         ]);
 
-        // Helper to extract data or default to 0/[]
         const getValue = (result: PromiseSettledResult<any>, fallback: any) => 
             result.status === 'fulfilled' ? result.value.data.data : fallback;
 
@@ -146,6 +153,8 @@ export default function LecturerDashboard() {
 
       } catch (err) {
         console.error("Failed to load dashboard stats", err);
+        // 3. Optional: Add a subtle toast if data completely fails
+        toast.error("Data Sync Error", { description: "Some dashboard metrics could not be loaded." });
       } finally {
         setLoading(false);
       }
@@ -155,6 +164,10 @@ export default function LecturerDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900">
+      
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
 
         {/* Header */}
@@ -219,7 +232,7 @@ export default function LecturerDashboard() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {rooms.slice(0, 3).map(room => ( // Show only recent 3
+              {rooms.slice(0, 3).map(room => ( 
                 <div key={room._id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
@@ -239,7 +252,8 @@ export default function LecturerDashboard() {
 
                   <div className="flex gap-3">
                     <button
-                      onClick={() => toggleRoom(room._id)}
+                      // 5. Pass current status to helper
+                      onClick={() => toggleRoom(room._id, room.active)}
                       className={`flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-colors ${
                         room.active 
                             ? "bg-white border border-red-200 text-red-600 hover:bg-red-50" 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMyNotes, deleteNote } from "../services/notes";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Plus, 
   Trash2, 
@@ -52,7 +53,8 @@ export default function Notes() {
       setTotalPages(res.totalPages || 1);
       setPage(pageNumber);
     } catch {
-      alert("Failed to load notes");
+      // 2. Fetch Error Toast
+      toast.error("Sync Error", { description: "Failed to load your notes." });
     } finally {
       setLoading(false);
     }
@@ -62,14 +64,38 @@ export default function Notes() {
     fetchNotes();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this note?")) return;
-    await deleteNote(id);
-    fetchNotes(page);
+  // 3. Custom Delete Confirmation & Promise Toast
+  const handleDelete = (id: string) => {
+    toast("Delete this note?", {
+        description: "This action cannot be undone.",
+        action: {
+            label: "Delete",
+            onClick: async () => {
+                const deletePromise = deleteNote(id);
+                
+                toast.promise(deletePromise, {
+                    loading: 'Deleting...',
+                    success: () => {
+                        fetchNotes(page);
+                        return "Note deleted successfully";
+                    },
+                    error: "Failed to delete note"
+                });
+            }
+        },
+        cancel: {
+            label: "Cancel",
+            onClick: () => {}
+        }
+    });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900">
+      
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       <div className="max-w-7xl mx-auto px-6 py-12">
         
         {/* Header */}

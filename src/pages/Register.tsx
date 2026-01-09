@@ -4,13 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import type { Role } from "../store/auth/authTypes"; // adjust path
 import { registerThunk } from "../store/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   User, 
   Mail, 
   Lock, 
   IdCard, 
   ChevronDown, 
-  AlertCircle, 
   Loader2,
   Eye,
   EyeOff 
@@ -19,7 +19,7 @@ import {
 export default function Register() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth); // Removed 'error' as Toast handles it
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,34 +34,52 @@ export default function Register() {
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
 
+    // 2. Validation Toasts
     if (!name || !email || !password || !confirm) {
-      alert("All fields are required");
+      toast.error("Incomplete Form", { 
+          description: "Please fill in all fields to create your account." 
+      });
       return;
     }
 
     if (password !== confirm) {
-      alert("Passwords do not match");
+      toast.error("Password Mismatch", { 
+          description: "The passwords you entered do not match." 
+      });
       return;
     }
 
-    const result = await dispatch(
+    // 3. Registration Promise Toast
+    // Using .unwrap() allows us to catch the error locally for the toast
+    const registerPromise = dispatch(
       registerThunk({
         name,
         email,
         password,
         role: [role],
       })
-    );
+    ).unwrap();
 
-    if (registerThunk.fulfilled.match(result)) {
-      alert("Registration successful! Please login.");
-      navigate("/login");
-    }
+    toast.promise(registerPromise, {
+        loading: 'Creating your account...',
+        success: () => {
+            // Navigate to login after a short delay so user sees the success message
+            setTimeout(() => navigate("/login"), 1500);
+            return "Registration successful! Please login.";
+        },
+        error: (err) => {
+            // Extract error message from Redux rejection
+            return err.message || typeof err === 'string' ? err : "Registration failed. Please try again.";
+        }
+    });
   };
 
   return (
     <div className="min-h-screen flex bg-white font-sans text-gray-900">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-center" richColors closeButton />
+
       {/* --- Left Side - Form --- */}
       <div className="flex-1 flex flex-col justify-center p-6 md:p-12 lg:p-20 overflow-y-auto">
         <div className="w-full max-w-md mx-auto space-y-8">
@@ -78,15 +96,7 @@ export default function Register() {
             </p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700 shadow-sm flex items-center gap-2">
-              <AlertCircle size={18} />
-              <div>
-                <strong className="font-semibold">Error:</strong> {error}
-              </div>
-          </div>
-          )}
+          {/* Removed static error block in favor of Toast notifications */}
 
           <form onSubmit={handleRegister} className="space-y-5">
             
@@ -103,6 +113,7 @@ export default function Register() {
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        disabled={loading}
                     />
                 </div>
             </div>
@@ -120,6 +131,7 @@ export default function Register() {
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading}
                     />
                 </div>
             </div>
@@ -139,6 +151,7 @@ export default function Register() {
                             className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            disabled={loading}
                         />
                         <button
                             type="button"
@@ -164,6 +177,7 @@ export default function Register() {
                             className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                             value={confirm}
                             onChange={(e) => setConfirm(e.target.value)}
+                            disabled={loading}
                         />
                          <button
                             type="button"
@@ -192,6 +206,7 @@ export default function Register() {
                         className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none appearance-none cursor-pointer"
                         value={role}
                         onChange={(e) => setRole(e.target.value as Role)}
+                        disabled={loading}
                     >
                         <option value="STUDENT">Student</option>
                         <option value="LECTURER">Lecturer</option>

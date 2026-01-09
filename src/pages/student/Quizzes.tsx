@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAvailableRooms, joinRoom } from "../../services/quizRoom"; 
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Clock, 
   FileText, 
@@ -51,13 +52,15 @@ export default function StudentQuizRooms() {
   // State for Join by Code
   const [roomCode, setRoomCode] = useState("");
   const [joining, setJoining] = useState(false);
-  const [joinError, setJoinError] = useState("");
 
   const loadRooms = () => {
     setLoading(true);
     getAvailableRooms()
       .then(res => setRooms(res.data.data || []))
-      .catch(() => console.error("Failed to load quiz rooms")) 
+      .catch(() => {
+          // 2. Load Error Toast
+          toast.error("Network Error", { description: "Could not load public rooms." });
+      }) 
       .finally(() => setLoading(false));
   };
 
@@ -67,21 +70,29 @@ export default function StudentQuizRooms() {
 
   const handleJoinByCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!roomCode.trim()) return;
+    if (!roomCode.trim()) {
+        toast.error("Input Required", { description: "Please enter a valid room code." });
+        return;
+    }
 
     setJoining(true);
-    setJoinError("");
 
-    try {
-        // Calls POST /api/v1/rooms/join
-        const res = await joinRoom({ roomCode }); 
-        const roomId = res.data.data.roomId;
-        navigate(`/student/rooms/${roomId}`);
-    } catch (err: any) {
-        setJoinError(err.response?.data?.message || "Invalid room code");
-    } finally {
-        setJoining(false);
-    }
+    // 3. Join Room Promise Toast
+    const joinPromise = joinRoom({ roomCode });
+
+    toast.promise(joinPromise, {
+        loading: 'Verifying room code...',
+        success: (res) => {
+            const roomId = res.data.data.roomId;
+            // Delay navigation slightly to show success message
+            setTimeout(() => navigate(`/student/rooms/${roomId}`), 500);
+            return "Room found! Joining session...";
+        },
+        error: (err) => {
+            setJoining(false);
+            return err.response?.data?.message || "Invalid room code or room is closed";
+        }
+    });
   };
 
   const filteredRooms = rooms.filter(r => 
@@ -91,6 +102,9 @@ export default function StudentQuizRooms() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
@@ -108,7 +122,7 @@ export default function StudentQuizRooms() {
 
       <div className="max-w-6xl mx-auto px-6 py-10 space-y-12">
         
-        {/* SECTION 1: JOIN PRIVATE ROOM (The missing feature) */}
+        {/* SECTION 1: JOIN PRIVATE ROOM */}
         <div className="bg-indigo-600 rounded-2xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
              {/* Decorative background circles */}
             <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-indigo-500 opacity-50 blur-3xl"></div>
@@ -129,7 +143,8 @@ export default function StudentQuizRooms() {
                             onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
                             placeholder="Ex: X7K9P2"
                             maxLength={6}
-                            className="w-full sm:w-64 pl-10 pr-4 py-3 bg-white text-gray-900 rounded-xl font-mono text-lg uppercase focus:ring-4 focus:ring-indigo-400 focus:outline-none placeholder:normal-case"
+                            disabled={joining}
+                            className="w-full sm:w-64 pl-10 pr-4 py-3 bg-white text-gray-900 rounded-xl font-mono text-lg uppercase focus:ring-4 focus:ring-indigo-400 focus:outline-none placeholder:normal-case disabled:opacity-70 disabled:cursor-not-allowed"
                         />
                     </div>
                     <button 
@@ -140,11 +155,6 @@ export default function StudentQuizRooms() {
                         {joining ? "Joining..." : "Join Room"}
                     </button>
                 </form>
-                {joinError && (
-                    <p className="mt-3 text-red-200 bg-red-500/20 inline-block px-3 py-1 rounded-lg text-sm border border-red-500/30">
-                        ⚠️ {joinError}
-                    </p>
-                )}
             </div>
         </div>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getMyNotes } from "../../services/notes";
 import type { Note } from "../../services/notes";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Plus, 
   FileText, 
@@ -55,7 +56,10 @@ export default function StudentDashboard() {
         const res = await getMyNotes();
         setNotes(res.data.slice(0, 3)); // recent 3
       } catch (err) {
-        console.error("Failed to load notes", err);
+        // 2. Error Toast
+        toast.error("Sync Error", { 
+            description: "Could not retrieve your recent notes." 
+        });
       } finally {
         setLoading(false);
       }
@@ -67,6 +71,9 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       
+      {/* 3. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Dashboard Header Banner */}
       <header className="bg-slate-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-12">

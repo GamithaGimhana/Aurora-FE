@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   Globe, 
@@ -34,7 +35,8 @@ export default function CreateQuizRoom() {
         const res = await api.get("/quizzes/me");
         setQuizzes(res.data.data || res.data);
       } catch (err) {
-        // Handle error gracefully
+        // 2. Handle Fetch Error
+        toast.error("Connection Error", { description: "Could not load your quiz library." });
       } finally {
         setFetching(false);
       }
@@ -42,23 +44,40 @@ export default function CreateQuizRoom() {
   }, []);
 
   const createRoom = async () => {
-    if (!quizId) return alert("Please select a quiz to continue.");
+    // 3. Validation Toast
+    if (!quizId) {
+        toast.error("Selection Required", { 
+            description: "Please select a quiz content to continue." 
+        });
+        return;
+    }
     
     setLoading(true);
-    try {
-      await api.post("/rooms/create", {
+
+    // 4. API Promise Toast
+    const promise = api.post("/rooms/create", {
         quizId,
         timeLimit: Number(timeLimit),
         maxAttempts: Number(maxAttempts),
         startsAt: startsAt || null,
         endsAt: endsAt || null,
         visibility,
-      });
+    });
 
-      navigate("/lecturer/rooms");
+    toast.promise(promise, {
+        loading: 'Initializing session...',
+        success: () => {
+            navigate("/lecturer/rooms");
+            return "Room launched successfully";
+        },
+        error: "Failed to create room. Please try again.",
+    });
+
+    try {
+      await promise;
     } catch (err) {
       console.error(err);
-      alert("Failed to create room. Please try again.");
+      // Error handled by toast.promise
     } finally {
       setLoading(false);
     }
@@ -69,6 +88,9 @@ export default function CreateQuizRoom() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 5. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">

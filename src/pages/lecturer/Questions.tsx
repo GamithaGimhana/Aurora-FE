@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   Plus, 
   Trash2, 
@@ -29,22 +30,38 @@ export default function Questions() {
       setQuestions(res.data.data || []);
     } catch (err) {
       console.error(err);
-      alert("Failed to fetch questions");
+      // 2. Fetch Error Toast
+      toast.error("Network Error", { description: "Failed to load question bank." });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this question? This cannot be undone.")) return;
+  const handleDelete = (id: string) => {
+    // 3. Custom Confirmation Toast
+    toast("Delete this question?", {
+        description: "This action cannot be undone.",
+        action: {
+            label: "Delete",
+            onClick: async () => {
+                // 4. Delete API Promise
+                const deletePromise = api.delete(`/questions/${id}`);
 
-    try {
-      await api.delete(`/questions/${id}`);
-      setQuestions((prev) => prev.filter((q) => q._id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to delete question");
-    }
+                toast.promise(deletePromise, {
+                    loading: "Deleting question...",
+                    success: () => {
+                        setQuestions((prev) => prev.filter((q) => q._id !== id));
+                        return "Question deleted successfully";
+                    },
+                    error: "Failed to delete question"
+                });
+            }
+        },
+        cancel: {
+            label: "Cancel",
+            onClick: () => {}
+        }
+    });
   };
 
   useEffect(() => {
@@ -59,6 +76,9 @@ export default function Questions() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
       
+      {/* 5. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between gap-4">

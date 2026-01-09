@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { Clock, CheckCircle } from "lucide-react";
 
 // --- Helper: Format Seconds ---
@@ -34,7 +35,10 @@ export default function Attempt() {
         const end = startedAt + timeLimit;
         setRemaining(Math.max(0, Math.floor((end - Date.now()) / 1000)));
       } catch (err) {
-        alert("Failed to load attempt");
+        // 2. Load Error Toast
+        toast.error("Error loading quiz", { 
+            description: "Please refresh the page to try again." 
+        });
       } finally {
         setLoading(false);
       }
@@ -60,31 +64,48 @@ export default function Attempt() {
     }));
   };
 
-  const submit = async () => {
-    if(!confirm("Are you sure you want to submit?")) return;
-    
+  const submit = () => {
+    // 3. Custom Confirmation Toast (Replaces window.confirm)
+    toast("Submit your attempt?", {
+        description: "You won't be able to change your answers after this.",
+        action: {
+            label: "Yes, Submit",
+            onClick: () => processSubmission()
+        },
+        cancel: {
+            label: "Review Answers",
+            onClick: () => {}
+        }
+    });
+  };
+
+  const processSubmission = async () => {
     setSubmitting(true);
-    try {
-      const payload = Object.entries(answers).map(
+
+    const payload = Object.entries(answers).map(
         ([questionId, selected]) => ({
           questionId,
           selected,
         })
-      );
+    );
 
-      const res = await api.post(
-        `/attempts/${attemptId}/submit`,
-        { answers: payload }
-      );
+    // 4. API Promise Toast
+    const submitPromise = api.post(`/attempts/${attemptId}/submit`, { answers: payload });
 
-      alert(`Quiz Submitted!\nScore: ${res.data.score}/${res.data.total}`);
-      //   navigate("/student/dashboard");
-      navigate(`/student/attempt/result/${attemptId}`);
-
-    } catch (err) {
-      alert("Failed to submit");
-      setSubmitting(false);
-    }
+    toast.promise(submitPromise, {
+        loading: 'Submitting answers...',
+        success: (res) => {
+            // Navigate after a brief delay so user sees the success state
+            setTimeout(() => {
+                 navigate(`/student/attempt/result/${attemptId}`);
+            }, 1000);
+            return `Quiz Submitted! Score: ${res.data.score}/${res.data.total}`;
+        },
+        error: () => {
+            setSubmitting(false);
+            return "Failed to submit quiz. Please check your connection.";
+        }
+    });
   };
 
   if (loading) {
@@ -109,6 +130,9 @@ export default function Attempt() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-24">
       
+      {/* 5. Toaster Component */}
+      <Toaster position="top-center" richColors />
+
       {/* --- Sticky Header --- */}
       <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">

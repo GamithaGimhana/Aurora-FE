@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchAdminStatsThunk } from "../../store/adminStats/adminStatsThunks";
+import { Toaster, toast } from "sonner";
 import { 
   Users, 
   FileText, 
@@ -42,12 +43,26 @@ export default function AdminDashboard() {
     (state) => state.adminStats
   );
 
+  // 2. Fetch Data
   useEffect(() => {
     dispatch(fetchAdminStatsThunk());
   }, [dispatch]);
 
+  // 3. Handle Alerts (Watch for Error State)
+  useEffect(() => {
+    if (error) {
+      toast.error("System Alert", {
+        description: error || "Failed to retrieve admin statistics.",
+        duration: 5000,
+      });
+    }
+  }, [error]);
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-20">
+      
+      {/* 4. Add the Toaster Component (Positioned Top-Right) */}
+      <Toaster position="top-right" richColors closeButton />
 
       {/* Top Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-5 sticky top-0 z-30">
@@ -95,7 +110,14 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-gray-300 text-gray-500">
-              {error || "Failed to load statistics."}
+               {/* 5. Cleaned up error UI since Toaster handles the alert now */}
+              <p>Unable to load dashboard data.</p>
+              <button 
+                onClick={() => dispatch(fetchAdminStatsThunk())}
+                className="mt-2 text-indigo-600 hover:underline text-sm font-medium"
+              >
+                Retry Connection
+              </button>
             </div>
           )}
         </section>

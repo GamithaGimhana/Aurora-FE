@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getNoteById, deleteNote } from "../services/notes";
 import type { Note } from "../services/notes";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { ChevronLeft, Trash2, Calendar } from "lucide-react";
 
 export default function ViewNote() {
@@ -18,7 +19,11 @@ export default function ViewNote() {
         setNote(data);
       } catch (err) {
         console.error("Failed to fetch note", err);
-        alert("Could not load note. It might have been deleted.");
+        // 2. Load Error Toast
+        toast.error("Not Found", { 
+            description: "Could not load the requested note. It might have been deleted." 
+        });
+        // Navigate back after a slight delay to let user read toast, or immediately
         navigate("/notes");
       } finally {
         setLoading(false);
@@ -28,14 +33,32 @@ export default function ViewNote() {
     fetchNote();
   }, [id, navigate]);
 
-  const handleDelete = async () => {
-    if (!note || !confirm("Are you sure you want to delete this note? This action cannot be undone.")) return;
-    try {
-      await deleteNote(note._id);
-      navigate("/notes");
-    } catch (err) {
-      alert("Failed to delete note");
-    }
+  // 3. Custom Delete Confirmation & Promise Toast
+  const handleDelete = () => {
+    if (!note) return;
+
+    toast("Delete this note?", {
+        description: "This action cannot be undone.",
+        action: {
+            label: "Delete",
+            onClick: async () => {
+                const deletePromise = deleteNote(note._id);
+
+                toast.promise(deletePromise, {
+                    loading: 'Deleting note...',
+                    success: () => {
+                        navigate("/notes");
+                        return "Note deleted successfully";
+                    },
+                    error: "Failed to delete note"
+                });
+            }
+        },
+        cancel: {
+            label: "Cancel",
+            onClick: () => {}
+        }
+    });
   };
 
   if (loading) {
@@ -53,6 +76,10 @@ export default function ViewNote() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 py-12 px-6">
+      
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       <div className="max-w-4xl mx-auto">
         
         {/* Navigation Header */}
@@ -95,7 +122,7 @@ export default function ViewNote() {
                     </div>
                 )}
                 <span>•</span>
-                {/* FIX: Safe access operator (?.) and fallback to 0 */}
+                {/* Safe access operator (?.) and fallback to 0 */}
                 <div>{note.content?.length || 0} characters</div>
             </div>
           </div>
@@ -103,7 +130,7 @@ export default function ViewNote() {
           {/* Body Section */}
           <div className="flex-1 p-8 md:p-12">
             <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap font-serif">
-                {/* FIX: Safe access to content */}
+                {/* Safe access to content */}
                 {note.content || ""}
             </div>
           </div>

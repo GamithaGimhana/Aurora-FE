@@ -2,6 +2,7 @@ import { type FormEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import QuestionBank from "./QuestionBank";
+import { Toaster, toast } from "sonner"; // 1. Import Sonner
 import { 
   ChevronLeft, 
   Plus, 
@@ -26,7 +27,7 @@ export default function CreateQuiz() {
   const [questions, setQuestions] = useState<QuestionPayload[]>([
     { question: "", options: ["", "", "", ""], answer: "" },
   ]);
-  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]); // for QuestionBank selection
+  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
 
   const addQuestion = () => setQuestions((q) => [...q, { question: "", options: ["", "", "", ""], answer: "" }]);
 
@@ -67,34 +68,47 @@ export default function CreateQuiz() {
         answer: q.answer.trim(),
       }));
 
+    // 2. Validation Toasts
     if (!title.trim()) {
-      return alert("Quiz title is required");
+      toast.error("Missing Information", { 
+          description: "Please provide a title for the quiz." 
+      });
+      return;
     }
 
     // Validation: Must have at least one question (either inline OR from bank)
     if (!inlineQuestions.length && !selectedQuestions.length) {
-      return alert("Please add at least one question (either create one inline or select from the Question Bank)");
+      toast.error("Empty Quiz", { 
+          description: "Add at least one question inline or select from the Question Bank." 
+      });
+      return;
     }
 
-    try {
-      await api.post("/quizzes/create", {
+    // 3. API Promise Toast
+    const createPromise = api.post("/quizzes/create", {
         title: title.trim(),
         description: description?.trim(),
         difficulty,
         questions: inlineQuestions.length ? inlineQuestions : undefined,
         selectedQuestions: selectedQuestions.length ? selectedQuestions : undefined,
-      });
+    });
 
-      navigate("/lecturer/rooms/create");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to create quiz");
-    }
+    toast.promise(createPromise, {
+        loading: 'Publishing quiz...',
+        success: () => {
+            navigate("/lecturer/rooms/create");
+            return "Quiz created successfully!";
+        },
+        error: "Failed to create quiz. Please try again.",
+    });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 pb-24">
       
+      {/* 4. Toaster Component */}
+      <Toaster position="top-right" richColors closeButton />
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center gap-4">
