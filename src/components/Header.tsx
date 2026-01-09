@@ -24,7 +24,6 @@ export default function Header() {
 
   const initial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
-  // Helper to render links so we don't duplicate logic
   // passing "mobile" prop to change styling slightly for the dropdown
   const renderLinks = (isMobile = false) => (
     <>
@@ -77,7 +76,7 @@ export default function Header() {
         {/* Right: User actions & Mobile Toggle */}
         <div className="flex items-center gap-4 z-50">
           
-          {/* User badge (Hidden on very small screens if you want, or keep it) */}
+          {/* User badge (Hidden on very small screens) */}
           <Link
             to="/profile"
             className="hidden sm:flex items-center gap-3 pl-1 pr-4 py-1 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 transition cursor-pointer"

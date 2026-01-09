@@ -262,9 +262,9 @@ const CONTENT: any = {
                         </div>
                     </div>
 
-                    <div className="mt-8 flex items-center font-bold text-sm text-black group-hover:text-indigo-600 transition-colors cursor-pointer group-hover:translate-x-2 transition-transform duration-300">
+                    <Link to="/login" className="mt-8 flex items-center font-bold text-sm text-black group-hover:text-indigo-600 transition-colors cursor-pointer group-hover:translate-x-2 transition-transform duration-300">
                         {guide.cta} <ArrowRight className="ml-2 w-4 h-4" />
-                    </div>
+                    </Link>
                 </div>
               </div>
             ))}

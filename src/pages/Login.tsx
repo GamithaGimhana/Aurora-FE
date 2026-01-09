@@ -141,7 +141,7 @@ export default function Login() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer hover:text-indigo-600 transition-colors"
-                  tabIndex={-1} // Optional: prevents tabbing to the eye icon if you prefer only tabbing between inputs
+                  tabIndex={-1}
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />

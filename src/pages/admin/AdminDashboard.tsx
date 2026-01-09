@@ -30,7 +30,6 @@ const AdminStatCard = ({ label, value, icon: Icon, colorTheme }: any) => {
         <h3 className="text-3xl font-extrabold text-gray-900">{value}</h3>
       </div>
       <div className={`p-4 rounded-xl ring-1 ${style} group-hover:scale-110 transition-transform`}>
-        {/* Lucide icons default to 24px (w-6 h-6). We set strokeWidth to 1.5 to match your original thin style */}
         <Icon size={24} strokeWidth={1.5} />
       </div>
     </div>
