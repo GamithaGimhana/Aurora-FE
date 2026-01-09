@@ -11,7 +11,9 @@ import {
   IdCard, 
   ChevronDown, 
   AlertCircle, 
-  Loader2 
+  Loader2,
+  Eye,
+  EyeOff 
 } from "lucide-react";
 
 export default function Register() {
@@ -24,6 +26,10 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [role, setRole] = useState<Role>("STUDENT");
+
+  // Toggle states for visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
@@ -118,8 +124,9 @@ export default function Register() {
                 </div>
             </div>
 
-            {/* Password */}
+            {/* Password & Confirm Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Password Field */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                     <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
@@ -127,15 +134,24 @@ export default function Register() {
                             <Lock size={20} />
                         </div>
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
-                            className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
+                            className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer hover:text-indigo-600 transition-colors"
+                            tabIndex={-1}
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                     </div>
                 </div>
 
+                {/* Confirm Field */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Confirm</label>
                     <div className="relative text-gray-400 focus-within:text-indigo-600 transition-colors">
@@ -143,12 +159,20 @@ export default function Register() {
                             <Lock size={20} />
                         </div>
                         <input
-                            type="password"
+                            type={showConfirm ? "text" : "password"}
                             placeholder="••••••••"
-                            className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
+                            className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                             value={confirm}
                             onChange={(e) => setConfirm(e.target.value)}
                         />
+                         <button
+                            type="button"
+                            onClick={() => setShowConfirm(!showConfirm)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer hover:text-indigo-600 transition-colors"
+                            tabIndex={-1}
+                        >
+                            {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                     </div>
                 </div>
             </div>

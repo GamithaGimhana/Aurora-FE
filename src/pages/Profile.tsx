@@ -17,7 +17,9 @@ import {
   Lock, 
   Key, 
   BadgeCheck, 
-  Loader2 
+  Loader2,
+  Eye,
+  EyeOff 
 } from "lucide-react";
 
 export default function Profile() {
@@ -38,6 +40,10 @@ export default function Profile() {
   const [newPassword, setNewPassword] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [isChangingPwd, setIsChangingPwd] = useState(false);
+
+  // Visibility Toggles
+  const [showCurrentPwd, setShowCurrentPwd] = useState(false);
+  const [showNewPwd, setShowNewPwd] = useState(false);
 
   // PROTECT ROUTE
   if (!authUser) {
@@ -247,15 +253,15 @@ export default function Profile() {
                 {/* Security Form */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                     <div className="flex items-center gap-3 mb-6">
-                         <div className="p-2 bg-red-50 text-red-600 rounded-lg">
+                          <div className="p-2 bg-red-50 text-red-600 rounded-lg">
                             <Lock size={20} />
                         </div>
                         <h3 className="text-lg font-bold text-gray-900">Security</h3>
                     </div>
 
                     <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 mb-6 text-sm text-orange-800 flex items-start gap-2">
-                         <span className="mt-0.5">⚠️</span>
-                         <span>Updating your password will automatically log you out of all sessions for security purposes.</span>
+                          <span className="mt-0.5">⚠️</span>
+                          <span>Updating your password will automatically log you out of all sessions for security purposes.</span>
                     </div>
 
                     <div className="space-y-5">
@@ -266,12 +272,20 @@ export default function Profile() {
                                     <Key size={20} />
                                 </div>
                                 <input
-                                    type="password"
+                                    type={showCurrentPwd ? "text" : "password"}
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:bg-white focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:bg-white focus:border-transparent outline-none transition-all"
                                     placeholder="••••••••"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCurrentPwd(!showCurrentPwd)}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-400 hover:text-red-500 transition-colors"
+                                    tabIndex={-1}
+                                >
+                                    {showCurrentPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                         </div>
 
@@ -282,12 +296,20 @@ export default function Profile() {
                                     <Lock size={20} />
                                 </div>
                                 <input
-                                    type="password"
+                                    type={showNewPwd ? "text" : "password"}
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:bg-white focus:border-transparent outline-none transition-all"
+                                    className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:bg-white focus:border-transparent outline-none transition-all"
                                     placeholder="••••••••"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewPwd(!showNewPwd)}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-gray-400 hover:text-red-500 transition-colors"
+                                    tabIndex={-1}
+                                >
+                                    {showNewPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                         </div>
 

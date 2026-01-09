@@ -3,7 +3,7 @@ import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { loginThunk } from "../store/auth/authThunks";
-import { Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
+import { Mail, Lock, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // New state to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -120,17 +122,35 @@ export default function Login() {
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="w-5 h-5" />
                 </div>
+                
                 <input
                   id="password"
-                  type="password"
+                  // Dynamic type based on state
+                  type={showPassword ? "text" : "password"} 
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
+                  // Changed pr-4 to pr-12 to make room for the eye icon
+                  className="w-full pl-11 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all outline-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
                   required
                 />
+
+                {/* Eye Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer hover:text-indigo-600 transition-colors"
+                  tabIndex={-1} // Optional: prevents tabbing to the eye icon if you prefer only tabbing between inputs
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
               </div>
+
               <div className="flex justify-end mt-2">
                 {/* <Link
                   to="/forgot-password"
