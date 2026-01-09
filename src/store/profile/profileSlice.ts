@@ -65,7 +65,7 @@ const profileSlice = createSlice({
       })
       .addCase(changePasswordThunk.fulfilled, (state) => {
         state.loading = false;
-        state.user = null; // 🔁 force re-login
+        state.user = null; // force re-login
       })
       .addCase(changePasswordThunk.rejected, (state, action) => {
         state.loading = false;
